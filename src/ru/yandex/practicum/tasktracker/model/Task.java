@@ -3,15 +3,10 @@ package ru.yandex.practicum.tasktracker.model;
 import java.util.Objects;
 
 public class Task {
-    protected String name;
-    protected TaskStatus status;
-    protected int id;
-    protected String description;
-
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+    private String name;
+    private TaskStatus status;
+    private Integer id;
+    private String description;
 
     public String getName() {
         return name;
@@ -23,6 +18,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -39,8 +38,6 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
-
-
     }
 
     public void setDescription(String description) {
@@ -59,10 +56,17 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof Task)) {
+            return false;
+        }
         Task task = (Task) o;
-        return id == task.id;
+        return id.equals(task.id);
     }
 
     @Override
