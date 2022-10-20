@@ -36,10 +36,6 @@ public class Task {
         this.status = status;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
