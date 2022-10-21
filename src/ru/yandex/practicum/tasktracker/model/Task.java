@@ -52,21 +52,14 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof Task)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
         Task task = (Task) o;
-        return id.equals(task.id);
+        return Objects.equals(name, task.name) && status == task.status && Objects.equals(id, task.id) && Objects.equals(description, task.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(name, status, id, description);
     }
 }

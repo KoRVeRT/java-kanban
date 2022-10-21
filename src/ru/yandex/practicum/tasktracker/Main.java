@@ -101,7 +101,6 @@ public class Main {
         updateEpic1.setName("Сдать на проверку ТЗ.");
         updateEpic1.setDescription("Отправить на проверку итоговое ТЗ №3 в Яндекс.Практикуме.");
         updateEpic1.setId(3);
-        // Maybe I should take the list of subtask id from the old epic before replacing it in the method.
         updateEpic1.getSubtaskIds().add(5);
         updateEpic1.getSubtaskIds().add(6);
         taskManager.updateEpic(updateEpic1);
@@ -118,6 +117,8 @@ public class Main {
         System.out.println(taskManager.getTaskById(2));
         System.out.println(taskManager.getEpicById(3));
         System.out.println(taskManager.getEpicById(4));
+        System.out.println(taskManager.getSubtasksByEpicId(3));
+        System.out.println(taskManager.getSubtasksByEpicId(4));
         System.out.println(taskManager.getSubtaskById(5));
         System.out.println(taskManager.getSubtaskById(6));
         System.out.println(taskManager.getSubtaskById(7));
@@ -129,6 +130,11 @@ public class Main {
         System.out.println();
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllSubTasks());
+        System.out.println(taskManager.getAllEpics());
+        // delete allSubtask of one Epic
+        taskManager.deleteAllSubtasks();
+        // print Epics
+        System.out.println();
         System.out.println(taskManager.getAllEpics());
     }
 }
