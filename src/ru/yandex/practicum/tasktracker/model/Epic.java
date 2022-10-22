@@ -1,12 +1,12 @@
 package ru.yandex.practicum.tasktracker.model;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subTaskIds = new ArrayList<>();
+    private final HashSet<Integer> subtaskIds = new HashSet<>();
 
-    public ArrayList<Integer> getSubtaskIds() {
-        return subTaskIds;
+    public HashSet<Integer> getSubtaskIds() {
+        return subtaskIds;
     }
 
     @Override
@@ -16,7 +16,7 @@ public class Epic extends Task {
                 ", status=" + getStatus() +
                 ", id=" + getId() +
                 ", description='" + getDescription() + '\'' +
-                ", subTaskId=" + subTaskIds +
+                ", subTaskId=" + subtaskIds +
                 '}';
     }
 }
