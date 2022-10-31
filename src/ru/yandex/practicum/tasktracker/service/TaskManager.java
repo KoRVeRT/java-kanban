@@ -7,8 +7,6 @@ import ru.yandex.practicum.tasktracker.model.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
-
-
     ArrayList<Task> getAllTasks();
 
     ArrayList<Subtask> getAllSubTasks();
@@ -48,5 +46,4 @@ public interface TaskManager {
     void deleteEpicById(int id);
 
     ArrayList<Subtask> getSubtasksByEpicId(int epicId);
-
 }
