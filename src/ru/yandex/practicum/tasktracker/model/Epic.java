@@ -1,11 +1,12 @@
 package ru.yandex.practicum.tasktracker.model;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Epic extends Task {
-    private final HashSet<Integer> subtaskIds = new HashSet<>();
+    private final Set<Integer> subtaskIds = new HashSet<>();
 
-    public HashSet<Integer> getSubtaskIds() {
+    public Set<Integer> getSubtaskIds() {
         return subtaskIds;
     }
 

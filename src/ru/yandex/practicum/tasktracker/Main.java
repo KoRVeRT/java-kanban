@@ -5,11 +5,12 @@ import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.service.TaskManager;
+import ru.yandex.practicum.tasktracker.utils.Managers;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
         // create tasks
         Task task1 = new Task();
         task1.setName("Купить батон.");
@@ -122,6 +123,16 @@ public class Main {
         System.out.println(taskManager.getSubtaskById(5));
         System.out.println(taskManager.getSubtaskById(6));
         System.out.println(taskManager.getSubtaskById(7));
+        // print history
+        System.out.println();
+        System.out.println(taskManager.getHistoryManager().getHistory());
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        System.out.println(taskManager.getHistoryManager().getHistory());
+        taskManager.getSubtaskById(5);
+        taskManager.getSubtaskById(6);
+        taskManager.getSubtaskById(7);
+        System.out.println(taskManager.getHistoryManager().getHistory());
         // delete
         taskManager.deleteSubtaskById(5);
         taskManager.deleteTaskById(1);
