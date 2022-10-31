@@ -37,7 +37,6 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager;
     }
 
-
     @Override
     public void deleteAllTasks() {
         tasks.clear();
