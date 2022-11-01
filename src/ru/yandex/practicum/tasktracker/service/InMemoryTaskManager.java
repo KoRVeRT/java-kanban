@@ -41,7 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Subtask> getSubtasksByEpicId(int epicId) {
         Epic currentEpic = epics.get(epicId);
-        ArrayList<Subtask> subtasksOfCurrentEpic = new ArrayList<>();
+        List<Subtask> subtasksOfCurrentEpic = new ArrayList<>();
         for (Integer subtaskId : currentEpic.getSubtaskIds()) {
             subtasksOfCurrentEpic.add(subTasks.get(subtaskId));
         }
