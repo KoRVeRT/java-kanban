@@ -39,6 +39,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public List<Subtask> getSubtasksByEpicId(int epicId) {
+        Epic currentEpic = epics.get(epicId);
+        ArrayList<Subtask> subtasksOfCurrentEpic = new ArrayList<>();
+        for (Integer subtaskId : currentEpic.getSubtaskIds()) {
+            subtasksOfCurrentEpic.add(subTasks.get(subtaskId));
+        }
+        return subtasksOfCurrentEpic;
+    }
+
+    @Override
     public void deleteAllTasks() {
         tasks.clear();
     }
@@ -143,16 +153,6 @@ public class InMemoryTaskManager implements TaskManager {
             subTasks.remove(subtaskId); // If you have removed Epic, then delete its subtasks.
         }
         epics.remove(id);
-    }
-
-    @Override
-    public List<Subtask> getSubtasksByEpicId(int epicId) {
-        Epic currentEpic = epics.get(epicId);
-        ArrayList<Subtask> subtasksOfCurrentEpic = new ArrayList<>();
-        for (Integer subtaskId : currentEpic.getSubtaskIds()) {
-            subtasksOfCurrentEpic.add(subTasks.get(subtaskId));
-        }
-        return subtasksOfCurrentEpic;
     }
 
     private TaskStatus calculateEpicStatus(Epic epic) {
