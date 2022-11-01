@@ -8,7 +8,6 @@ import ru.yandex.practicum.tasktracker.service.TaskManager;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
 public class Main {
-
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
         // create tasks

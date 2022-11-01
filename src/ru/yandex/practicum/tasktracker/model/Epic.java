@@ -23,7 +23,6 @@ public class Epic extends Task {
         subtaskIds.clear();
     }
 
-
     @Override
     public String toString() {
         return "Epic{" +
