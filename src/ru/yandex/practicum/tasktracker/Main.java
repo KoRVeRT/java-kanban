@@ -102,15 +102,15 @@ public class Main {
         updateEpic1.setName("Сдать на проверку ТЗ.");
         updateEpic1.setDescription("Отправить на проверку итоговое ТЗ №3 в Яндекс.Практикуме.");
         updateEpic1.setId(3);
-        updateEpic1.getSubtaskIds().add(5);
-        updateEpic1.getSubtaskIds().add(6);
+        updateEpic1.addSubtaskId(5);
+        updateEpic1.addSubtaskId(6);
         taskManager.updateEpic(updateEpic1);
 
         Epic updateEpic2 = new Epic();
         updateEpic2.setName("Пополнить запасы еды для животных.");
         updateEpic2.setDescription("Список что нужно купить для животных.");
         updateEpic2.setId(4);
-        updateEpic2.getSubtaskIds().add(7);
+        updateEpic2.addSubtaskId(7);
         taskManager.updateEpic(updateEpic2);
         // print
         System.out.println();
@@ -125,14 +125,14 @@ public class Main {
         System.out.println(taskManager.getSubtaskById(7));
         // print history
         System.out.println();
-        System.out.println(taskManager.getHistoryManager().getHistory());
+        System.out.println(taskManager.getHistoryManager());
         taskManager.getTaskById(1);
         taskManager.getTaskById(2);
-        System.out.println(taskManager.getHistoryManager().getHistory());
+        System.out.println(taskManager.getHistoryManager());
         taskManager.getSubtaskById(5);
         taskManager.getSubtaskById(6);
         taskManager.getSubtaskById(7);
-        System.out.println(taskManager.getHistoryManager().getHistory());
+        System.out.println(taskManager.getHistoryManager());
         // delete
         taskManager.deleteSubtaskById(5);
         taskManager.deleteTaskById(1);

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.tasktracker.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,8 +8,21 @@ public class Epic extends Task {
     private final Set<Integer> subtaskIds = new HashSet<>();
 
     public Set<Integer> getSubtaskIds() {
-        return subtaskIds;
+        return Collections.unmodifiableSet(subtaskIds);
     }
+
+    public void addSubtaskId(Integer subtask) {
+        subtaskIds.add(subtask);
+    }
+
+    public void removeSubtaskId(Integer subtask) {
+        subtaskIds.remove(subtask);
+    }
+
+    public void clearSubtaskIds() {
+        subtaskIds.clear();
+    }
+
 
     @Override
     public String toString() {
