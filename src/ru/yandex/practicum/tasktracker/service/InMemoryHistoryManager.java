@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final List<Task> viewHistory = new LinkedList<>();
-    private final int COUNT_RECORDS = 10;
+    private static final int COUNT_RECORDS = 10;
 
     @Override
     public void add(Task task) {
