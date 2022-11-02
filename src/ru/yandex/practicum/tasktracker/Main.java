@@ -124,14 +124,14 @@ public class Main {
         System.out.println(taskManager.getSubtaskById(7));
         // print history
         System.out.println();
-        System.out.println(taskManager.getHistoryManager());
+        System.out.println(taskManager.getHistory());
         taskManager.getTaskById(1);
         taskManager.getTaskById(2);
-        System.out.println(taskManager.getHistoryManager());
+        System.out.println(taskManager.getHistory());
         taskManager.getSubtaskById(5);
         taskManager.getSubtaskById(6);
         taskManager.getSubtaskById(7);
-        System.out.println(taskManager.getHistoryManager());
+        System.out.println(taskManager.getHistory());
         // delete
         taskManager.deleteSubtaskById(5);
         taskManager.deleteTaskById(1);
