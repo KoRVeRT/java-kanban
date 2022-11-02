@@ -40,12 +40,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getSubtasksByEpicId(int epicId) {
-        Epic currentEpic = epics.get(epicId);
-        List<Subtask> subtasksOfCurrentEpic = new ArrayList<>();
-        for (Integer subtaskId : currentEpic.getSubtaskIds()) {
-            subtasksOfCurrentEpic.add(subTasks.get(subtaskId));
+        Epic epic = epics.get(epicId);
+        List<Subtask> epicSubtasks = new ArrayList<>();
+        for (Integer subtaskId : epic.getSubtaskIds()) {
+            epicSubtasks.add(subTasks.get(subtaskId));
         }
-        return subtasksOfCurrentEpic;
+        return epicSubtasks;
     }
 
     @Override
@@ -70,23 +70,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int taskId) {
-        Task currentTask = tasks.get(taskId);
-        historyManager.add(currentTask);
-        return currentTask;
+        Task task = tasks.get(taskId);
+        historyManager.add(task);
+        return task;
     }
 
     @Override
     public Subtask getSubtaskById(int subtaskId) {
-        Subtask currentSubtask = subTasks.get(subtaskId);
-        historyManager.add(currentSubtask);
-        return currentSubtask;
+        Subtask subtask = subTasks.get(subtaskId);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
     public Epic getEpicById(int epicId) {
-        Epic currentEpic = epics.get(epicId);
-        historyManager.add(currentEpic);
-        return currentEpic;
+        Epic epic = epics.get(epicId);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
@@ -98,11 +98,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubtask(Subtask subtask) {
-        Epic currentEpic = epics.get(subtask.getEpicId());
+        Epic epic = epics.get(subtask.getEpicId());
         subtask.setId(generatorId);
         subTasks.put(generatorId, subtask);
-        currentEpic.addSubtaskId(generatorId);
-        currentEpic.setStatus(calculateEpicStatus(currentEpic));
+        epic.addSubtaskId(generatorId);
+        epic.setStatus(calculateEpicStatus(epic));
         generatorId++;
     }
 
@@ -128,8 +128,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         subTasks.put(subtask.getId(), subtask);
-        Epic currentEpic = epics.get(subtask.getEpicId());
-        currentEpic.setStatus(calculateEpicStatus(currentEpic));
+        Epic epic = epics.get(subtask.getEpicId());
+        epic.setStatus(calculateEpicStatus(epic));
     }
 
     @Override
@@ -139,17 +139,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtaskById(int subtaskId) {
-        Subtask currentSubtask = subTasks.get(subtaskId);
-        Epic currentEpic = epics.get(currentSubtask.getEpicId());
+        Subtask subtask = subTasks.get(subtaskId);
+        Epic epic = epics.get(subtask.getEpicId());
         subTasks.remove(subtaskId);
-        currentEpic.removeSubtaskId(subtaskId);
-        currentEpic.setStatus(calculateEpicStatus(currentEpic));
+        epic.removeSubtaskId(subtaskId);
+        epic.setStatus(calculateEpicStatus(epic));
     }
 
     @Override
     public void deleteEpicById(int id) {
-        Epic currentEpic = getEpicById(id);
-        for (Integer subtaskId : currentEpic.getSubtaskIds()) {
+        Epic epic = getEpicById(id);
+        for (Integer subtaskId : epic.getSubtaskIds()) {
             subTasks.remove(subtaskId); // If you have removed Epic, then delete its subtasks.
         }
         epics.remove(id);
@@ -160,9 +160,9 @@ public class InMemoryTaskManager implements TaskManager {
         boolean isDone = true;
 
         for (Integer subtaskId : epic.getSubtaskIds()) {
-            Subtask currentSubtask = subTasks.get(subtaskId);
-            TaskStatus currentSubtaskStatus = currentSubtask.getStatus();
-            switch (currentSubtaskStatus) {
+            Subtask subtask = subTasks.get(subtaskId);
+            TaskStatus subtaskStatus = subtask.getStatus();
+            switch (subtaskStatus) {
                 case NEW:
                     isDone = false;
                     break;
