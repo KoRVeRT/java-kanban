@@ -141,7 +141,7 @@ public class Main {
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllSubTasks());
         System.out.println(taskManager.getAllEpics());
-        // delete allSubtask of one Epic
+        // delete allSubtask
         taskManager.deleteAllSubtasks();
         // print Epics
         System.out.println();

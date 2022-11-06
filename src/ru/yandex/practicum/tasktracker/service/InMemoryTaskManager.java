@@ -4,7 +4,6 @@ import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
-import ru.yandex.practicum.tasktracker.utils.Managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +15,11 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Subtask> subTasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager;
+
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
 
     @Override
     public List<Task> getAllTasks() {
