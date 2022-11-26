@@ -50,42 +50,40 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        tasks.clear();
-        Iterator<Task> iterator = historyManager.getHistory().iterator();
+        Iterator<Map.Entry<Integer, Task>> iterator = tasks.entrySet().iterator();
         while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (task.getClass() == Task.class) {
-                iterator.remove();
-            }
+            Map.Entry<Integer, Task> entry = iterator.next();
+            historyManager.remove(entry.getKey());
+            iterator.remove();
         }
     }
 
     @Override
     public void deleteAllSubtasks() {
-        subTasks.clear();
+        Iterator<Map.Entry<Integer, Subtask>> iterator = subTasks.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<Integer, Subtask> entry = iterator.next();
+            historyManager.remove(entry.getKey());
+            iterator.remove();
+        }
         for (Epic epic : epics.values()) { // Clear the list of subtasks for each epic and assign the status NEW.
             epic.clearSubtaskIds();
             epic.setStatus(TaskStatus.NEW);
-        }
-        Iterator<Task> iterator = historyManager.getHistory().iterator();
-        while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (task.getClass() == Subtask.class) {
-                iterator.remove();
-            }
         }
     }
 
     @Override
     public void deleteAllEpics() {
-        epics.clear();
-        subTasks.clear();
-        Iterator<Task> iterator = historyManager.getHistory().iterator();
+        Iterator<Map.Entry<Integer, Epic>> iterator = epics.entrySet().iterator();
         while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (task.getClass() == Epic.class || task.getClass() == Subtask.class) {
-                iterator.remove();
+            Map.Entry<Integer, Epic> entry = iterator.next();
+            Epic epic = getEpicById(entry.getKey());
+            for (Integer subtaskId : epic.getSubtaskIds()) {
+                subTasks.remove(subtaskId);
+                historyManager.remove(subtaskId);
             }
+            historyManager.remove(entry.getKey());
+            iterator.remove();
         }
     }
 
