@@ -55,9 +55,10 @@ public class Task {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Task task)) {
+        if (!(o instanceof Task)) {
             return false;
         }
+        Task task = (Task) o;
         return Objects.equals(name, task.name)
                 && status == task.status
                 && Objects.equals(id, task.id)
