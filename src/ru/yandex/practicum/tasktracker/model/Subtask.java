@@ -29,7 +29,7 @@ public class Subtask extends Task {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Subtask)) {
             return false;
         }
         if (!super.equals(o)) {

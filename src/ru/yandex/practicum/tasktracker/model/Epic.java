@@ -40,7 +40,7 @@ public class Epic extends Task {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Epic)) {
             return false;
         }
         if (!super.equals(o)) {
