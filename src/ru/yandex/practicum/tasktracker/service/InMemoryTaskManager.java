@@ -7,7 +7,6 @@ import ru.yandex.practicum.tasktracker.model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,41 +53,35 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        Iterator<Map.Entry<Integer, Task>> iterator = tasks.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, Task> entry = iterator.next();
-            historyManager.remove(entry.getKey());
-            iterator.remove();
+        for (int id : tasks.keySet()) {
+            historyManager.remove(id);
         }
+        tasks.clear();
     }
 
     @Override
     public void deleteAllSubtasks() {
-        Iterator<Map.Entry<Integer, Subtask>> iterator = subTasks.entrySet().iterator();
-        while (iterator.hasNext()){
-            Map.Entry<Integer, Subtask> entry = iterator.next();
-            historyManager.remove(entry.getKey());
-            iterator.remove();
+        for (int id : subTasks.keySet()) {
+            historyManager.remove(id);
         }
         for (Epic epic : epics.values()) { // Clear the list of subtasks for each epic and assign the status NEW.
             epic.clearSubtaskIds();
             epic.setStatus(TaskStatus.NEW);
         }
+        subTasks.clear();
     }
 
     @Override
     public void deleteAllEpics() {
-        Iterator<Map.Entry<Integer, Epic>> iterator = epics.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, Epic> entry = iterator.next();
-            Epic epic = getEpicById(entry.getKey());
-            for (Integer subtaskId : epic.getSubtaskIds()) {
-                subTasks.remove(subtaskId);
+        for (int epicId : epics.keySet()) {
+            Epic epic = getEpicById(epicId);
+            for (int subtaskId : epic.getSubtaskIds()){
                 historyManager.remove(subtaskId);
             }
-            historyManager.remove(entry.getKey());
-            iterator.remove();
+            historyManager.remove(epicId);
         }
+        epics.clear();
+        subTasks.clear();
     }
 
     @Override
