@@ -26,13 +26,13 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        List<Task> listHistory = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         Node currentNode = first;
         while (currentNode != null) {
-            listHistory.add(currentNode.task);
+            tasks.add(currentNode.task);
             currentNode = currentNode.next;
         }
-        return listHistory;
+        return tasks;
     }
 
     private void linkLast(Task task) {
