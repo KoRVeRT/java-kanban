@@ -39,13 +39,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         final Node newNode = new Node(task);
         if (nodes.isEmpty()) {
             first = newNode;
-            last = newNode;
         } else {
             final Node oldLast = last;
-            last = newNode;
             newNode.previous = oldLast;
             oldLast.next = newNode;
         }
+        last = newNode;
         nodes.put(task.getId(), newNode);
     }
 
