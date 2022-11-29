@@ -37,7 +37,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void linkLast(Task task) {
         final Node newNode = new Node(task);
-        removeNode(nodes.get(task.getId()));
         if (nodes.isEmpty()) {
             first = newNode;
             last = newNode;
