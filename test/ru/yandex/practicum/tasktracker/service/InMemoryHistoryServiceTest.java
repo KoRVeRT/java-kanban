@@ -26,7 +26,6 @@ public class InMemoryHistoryServiceTest {
 
         List<Task> expected = List.of(task1, task2, task3);
         List<Task> actual = historyManager.getHistory();
-
         assertEquals(expected, actual);
     }
 
