@@ -57,8 +57,8 @@ public class Main {
         taskManager.addSubtask(subtaskSprint3);
         // print
         System.out.println();
-        taskManager.getTaskById(task1.getId());
-        System.out.println(taskManager.getHistory());
+//        taskManager.getTaskById(task1.getId());
+//        System.out.println(taskManager.getHistory());
 //        taskManager.getTaskById(task2.getId());
 //        System.out.println(taskManager.getHistory());
 //        taskManager.getEpicById(epic1.getId());
