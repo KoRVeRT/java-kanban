@@ -26,10 +26,7 @@ public class Subtask extends Task {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Subtask)) {
-            return false;
-        }
-        if (!super.equals(o)) {
+        if (!(o instanceof Subtask) || !super.equals(o)) {
             return false;
         }
         Subtask subtask = (Subtask) o;
