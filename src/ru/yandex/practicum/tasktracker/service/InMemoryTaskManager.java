@@ -53,12 +53,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        tasks.keySet().forEach(id -> historyManager.remove(id));
+        tasks.keySet().forEach(historyManager::remove);
+        tasks.clear();
     }
 
     @Override
     public void deleteAllSubtasks() {
-        subTasks.keySet().forEach(id -> historyManager.remove(id));
+        subTasks.keySet().forEach(historyManager::remove);
         epics.values().forEach(epic -> {
             epic.clearSubtaskIds();
             epic.setStatus(TaskStatus.NEW);
@@ -68,8 +69,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
-        epics.keySet().forEach(id -> historyManager.remove(id));
-        subTasks.keySet().forEach(id -> historyManager.remove(id));
+        epics.keySet().forEach(historyManager::remove);
+        subTasks.keySet().forEach(historyManager::remove);
         epics.clear();
         subTasks.clear();
     }
@@ -156,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpicById(int epicId) {
-        Epic epic = getEpicById(epicId);
+        Epic epic = epics.get(epicId);
         for (Integer subtaskId : epic.getSubtaskIds()) {
             subTasks.remove(subtaskId);
             historyManager.remove(subtaskId);
@@ -173,15 +174,12 @@ public class InMemoryTaskManager implements TaskManager {
             Subtask subtask = subTasks.get(subtaskId);
             TaskStatus subtaskStatus = subtask.getStatus();
             switch (subtaskStatus) {
-                case NEW:
-                    isDone = false;
-                    break;
-                case IN_PROGRESS:
+                case NEW -> isDone = false;
+                case IN_PROGRESS -> {
                     isNew = false;
                     isDone = false;
-                    break;
-                case DONE:
-                    isNew = false;
+                }
+                case DONE -> isNew = false;
             }
         }
 
