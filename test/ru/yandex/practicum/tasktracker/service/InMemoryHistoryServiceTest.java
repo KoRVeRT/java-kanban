@@ -6,10 +6,9 @@ import ru.yandex.practicum.tasktracker.model.Task;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class InMemoryHistoryServiceTest {
+class InMemoryHistoryServiceTest {
     private final HistoryManager historyManager = new InMemoryHistoryManager();
 
     @Test
@@ -19,9 +18,9 @@ public class InMemoryHistoryServiceTest {
 
     @Test
     void add_shouldSaveTaskToHistory() {
-        Task task1 = Task(1);
-        Task task2 = Task(2);
-        Task task3 = Task(3);
+        Task task1 = task(1);
+        Task task2 = task(2);
+        Task task3 = task(3);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -33,9 +32,9 @@ public class InMemoryHistoryServiceTest {
 
     @Test
     void add_shouldNotKeepDuplicates() {
-        Task task1 = Task(1);
-        Task task2 = Task(2);
-        Task task3 = Task(3);
+        Task task1 = task(1);
+        Task task2 = task(2);
+        Task task3 = task(3);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -48,40 +47,50 @@ public class InMemoryHistoryServiceTest {
 
     @Test
     void add_shouldMoveTaskToTheEnd_ifTaskAlreadyExistsInHistory() {
-        Task task1 = Task(1);
-        Task task2 = Task(2);
-        Task task3 = Task(3);
+        Task task1 = task(1);
+        Task task2 = task(2);
+        Task task3 = task(3);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
 
         historyManager.add(task1);
-        assertEquals(historyManager.getHistory().indexOf(task1), 2);
+        assertEquals(historyManager.getHistory(), List.of(task2, task3, task1));
     }
 
     @Test
     void remove_shouldRemoveTaskFromHistory() {
-        Task task1 = Task(1);
-        Task task2 = Task(2);
-        Task task3 = Task(3);
+        Task task1 = task(1);
+        Task task2 = task(2);
+        Task task3 = task(3);
+        Task task4 = task(4);
+        Task task5 = task(5);
+        Task task6 = task(6);
+        Task task7 = task(7);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
+        historyManager.add(task4);
+        historyManager.add(task5);
+        historyManager.add(task6);
+        historyManager.add(task7);
 
-        historyManager.remove(2);
-        assertFalse(historyManager.getHistory().contains(task2));
+        historyManager.remove(1);
+        historyManager.remove(4);
+        historyManager.remove(7);
+        assertEquals(historyManager.getHistory(), List.of(task2, task3, task5, task6));
     }
 
     @Test
     void remove_shouldReturnEmptyHistory_ifDeleteSingleTask() {
-        Task task1 = Task(1);
+        Task task1 = task(1);
         historyManager.add(task1);
 
         historyManager.remove(task1.getId());
         assertTrue(historyManager.getHistory().isEmpty());
     }
 
-    private static Task Task(int id) {
+    private static Task task(int id) {
         Task task = new Task();
         task.setId(id);
         return task;
