@@ -8,6 +8,10 @@ import java.util.Set;
 public class Epic extends Task {
     private final Set<Integer> subtaskIds = new HashSet<>();
 
+    public Epic() {
+        setType(TaskTypes.EPIC);
+    }
+
     public Set<Integer> getSubtaskIds() {
         return Collections.unmodifiableSet(subtaskIds);
     }

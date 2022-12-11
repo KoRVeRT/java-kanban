@@ -4,9 +4,14 @@ import java.util.Objects;
 
 public class Task {
     private Integer id;
+    private TaskTypes type;
     private String name;
     private TaskStatus status;
     private String description;
+
+    public Task() {
+        this.type = TaskTypes.TASK;
+    }
 
     public String getName() {
         return name;
@@ -14,6 +19,10 @@ public class Task {
 
     public TaskStatus getStatus() {
         return status;
+    }
+
+    public TaskTypes getType() {
+        return type;
     }
 
     public int getId() {
@@ -26,6 +35,10 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setType(TaskTypes type) {
+        this.type = type;
     }
 
     public void setName(String name) {

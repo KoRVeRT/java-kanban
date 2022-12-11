@@ -5,6 +5,10 @@ import java.util.Objects;
 public class Subtask extends Task {
     private int epicId;
 
+    public Subtask() {
+        setType(TaskTypes.SUBTASK);
+    }
+
     public int getEpicId() {
         return epicId;
     }
