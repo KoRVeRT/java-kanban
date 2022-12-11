@@ -42,10 +42,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                     if (idTasksHistory == null) {
                         break;
                     }
-                    recoverHistory(loadTasksManager, historyFromString(idTasksHistory));
+                    loadTasksManager.recoverHistory(historyFromString(idTasksHistory));
                     break;
                 }
-                recoverTask(loadTasksManager, loadTasksManager.fromString(taskLine));
+                loadTasksManager.recoverTask(loadTasksManager.fromString(taskLine));
             }
             return loadTasksManager;
         } catch (IOException e) {
@@ -146,19 +146,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         save();
     }
 
-    private static void recoverHistory(FileBackedTasksManager manager, List<Integer> IdTasksHistory) {
+    private void recoverHistory(List<Integer> IdTasksHistory) {
         for (Integer task : IdTasksHistory) {
-            manager.addInHistory(FindTask(manager, task));
+            historyManager.add(searchTask(task));
         }
     }
 
-    private static void recoverTask(FileBackedTasksManager manager, Task task) {
+    private void recoverTask(Task task) {
         switch (task.getType()) {
-            case TASK -> manager.tasks.put(task.getId(), task);
-            case SUBTASK -> manager.subTasks.put(task.getId(), (Subtask) task);
-            case EPIC -> manager.epics.put(task.getId(), (Epic) task);
+            case TASK -> tasks.put(task.getId(), task);
+            case SUBTASK -> subTasks.put(task.getId(), (Subtask) task);
+            case EPIC -> epics.put(task.getId(), (Epic) task);
         }
-        manager.generatorId++;
+        generatorId++;
     }
 
     private static String historyToString(HistoryManager manager) {
@@ -258,13 +258,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return task;
     }
 
-    private static Task FindTask(FileBackedTasksManager manager, Integer task) {
-        if (manager.tasks.containsKey(task)) {
-            return manager.tasks.get(task);
-        } else if (manager.subTasks.containsKey(task)) {
-            return manager.subTasks.get(task);
+    private Task searchTask(Integer task) {
+        if (tasks.containsKey(task)) {
+            return tasks.get(task);
+        } else if (subTasks.containsKey(task)) {
+            return subTasks.get(task);
         } else {
-            return manager.epics.get(task);
+            return epics.get(task);
         }
     }
 }
