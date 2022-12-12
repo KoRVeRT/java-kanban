@@ -166,7 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(epicId);
     }
 
-    public void addInHistory(Task task){
+    protected void addInHistory(Task task){
         historyManager.add(task);
     }
 
