@@ -28,11 +28,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         this.pathSave = path;
     }
 
-    public static FileBackedTasksManager loadFromFile(String path) {
+    public static FileBackedTasksManager loadFromFile(String path) { ///???
         FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
-        if (!Files.isRegularFile(Path.of(path))) {
-            return loadTasksManager;
-        }
         try (BufferedReader reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8))) {
             reader.readLine(); // removing the table header
             while (reader.ready()) {
@@ -73,17 +70,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     @Override
     public Task getTaskById(int taskId) {
-        return super.getTaskById(taskId);
+        Task task = super.getTaskById(taskId);
+        save();
+        return task;
     }
 
     @Override
     public Subtask getSubtaskById(int subtaskId) {
-        return super.getSubtaskById(subtaskId);
+        Subtask subtask = super.getSubtaskById(subtaskId);
+        save();
+        return subtask;
     }
 
     @Override
     public Epic getEpicById(int epicId) {
-        return super.getEpicById(epicId);
+        Epic epic = super.getEpicById(epicId);
+        save();
+        return epic;
     }
 
     @Override
@@ -137,12 +140,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     @Override
     public void deleteEpicById(int epicId) {
         super.deleteEpicById(epicId);
-        save();
-    }
-
-    @Override
-    public void addToHistory(Task task) {
-        super.addToHistory(task);
         save();
     }
 
