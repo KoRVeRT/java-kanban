@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest {
     private final TaskManager taskManager = new InMemoryTaskManager(new InMemoryHistoryManager());
 
     @Test
@@ -83,7 +83,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void addSubtask_shouldSaveSubtaskInTaskManager() {
+    void addSubtask_shouldSaveSubtaskInTaskManager_AndCheckSubtaskAddInEpic() {
         Epic epic1 = new Epic();
         taskManager.addEpic(epic1);
 
@@ -97,9 +97,13 @@ public class InMemoryTaskManagerTest {
         subtask2.setStatus(TaskStatus.DONE);
         taskManager.addSubtask(subtask2);
 
-        List<Subtask> expected = List.of(subtask1, subtask2);
-        List<Subtask> actual = taskManager.getAllSubTasks();
-        assertEquals(expected, actual);
+        List<Subtask> expectedSubtask = List.of(subtask1, subtask2);
+        List<Subtask> actualSubtask = taskManager.getAllSubTasks();
+        assertEquals(expectedSubtask, actualSubtask);
+
+        List<Subtask> expectedInEpic = List.of(subtask1, subtask2);
+        List<Subtask> actualInEpic = taskManager.getSubtasksByEpicId(epic1.getId());
+        assertEquals(expectedInEpic, actualInEpic);
     }
 
     @Test
@@ -199,7 +203,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void deleteSubtaskById_shouldRemoveSubtaskByUseIdInTaskManager_AndChangeEpicStatus() {
+    void deleteSubtaskById_shouldRemoveSubtaskByUseIdInTaskManager_ChangeEpicStatus_SubtaskRemoveFromEpic() {
         Epic epic1 = new Epic();
         taskManager.addEpic(epic1);
 
@@ -214,9 +218,14 @@ public class InMemoryTaskManagerTest {
         taskManager.addSubtask(subtask2);
 
         taskManager.deleteSubtaskById(subtask1.getId());
-        List<Subtask> expected = List.of(subtask2);
-        List<Subtask> actual = taskManager.getAllSubTasks();
-        assertEquals(expected, actual);
+        List<Subtask> expectedSubtask = List.of(subtask2);
+        List<Subtask> actualSubtask = taskManager.getAllSubTasks();
+        assertEquals(expectedSubtask, actualSubtask);
+
+        List<Subtask> expectedInEpic = List.of(subtask2);
+        List<Subtask> actualInEpic = taskManager.getSubtasksByEpicId(epic1.getId());
+        assertEquals(expectedInEpic, actualInEpic);
+
         assertEquals(TaskStatus.DONE, epic1.getStatus());
     }
 
