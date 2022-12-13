@@ -141,8 +141,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void addInHistory(Task task) {
-        super.addInHistory(task);
+    public void addToHistory(Task task) {
+        super.addToHistory(task);
         save();
     }
 
