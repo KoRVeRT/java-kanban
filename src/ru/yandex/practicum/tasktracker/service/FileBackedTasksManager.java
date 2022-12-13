@@ -4,7 +4,7 @@ import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
-import ru.yandex.practicum.tasktracker.model.TaskTypes;
+import ru.yandex.practicum.tasktracker.model.TaskType;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
 import java.io.BufferedReader;
@@ -210,7 +210,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         String nameTask = task.getName();
         String statusTask = String.valueOf(task.getStatus());
         String descriptionTask = task.getDescription();
-        if (!typeTask.equals(TaskTypes.SUBTASK.toString())) {
+        if (!typeTask.equals(TaskType.SUBTASK.toString())) {
             return String.format("%d,%s,%s,%s,%s", idTask, typeTask, nameTask, statusTask, descriptionTask);
         }
         Subtask subtask = (Subtask) task;
@@ -222,7 +222,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         Task task = new Task();
         String[] arrayDataTask = value.split(",");
         int idTask = Integer.parseInt(arrayDataTask[0]);
-        TaskTypes typeTask = TaskTypes.valueOf(arrayDataTask[1]);
+        TaskType typeTask = TaskType.valueOf(arrayDataTask[1]);
         String nameTask = arrayDataTask[2];
         TaskStatus statusTask = TaskStatus.valueOf(arrayDataTask[3]);
         String descriptionTask = arrayDataTask[4];

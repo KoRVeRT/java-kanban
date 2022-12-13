@@ -5,8 +5,9 @@ import java.util.Objects;
 public class Subtask extends Task {
     private int epicId;
 
-    public Subtask() {
-        setType(TaskTypes.SUBTASK);
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
     }
 
     public int getEpicId() {

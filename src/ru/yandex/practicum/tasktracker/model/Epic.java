@@ -8,8 +8,9 @@ import java.util.Set;
 public class Epic extends Task {
     private final Set<Integer> subtaskIds = new HashSet<>();
 
-    public Epic() {
-        setType(TaskTypes.EPIC);
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     public Set<Integer> getSubtaskIds() {
