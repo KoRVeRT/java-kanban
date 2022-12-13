@@ -155,7 +155,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             case SUBTASK -> subTasks.put(task.getId(), (Subtask) task);
             case EPIC -> epics.put(task.getId(), (Epic) task);
         }
-        generatorId++;
+        if (task.getId() > generatorId) {
+            generatorId = task.getId();
+        }
     }
 
     private static String historyToString(HistoryManager manager) {
