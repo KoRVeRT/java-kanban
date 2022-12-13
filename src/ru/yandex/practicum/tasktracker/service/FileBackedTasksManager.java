@@ -26,7 +26,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         this.pathSave = path;
     }
 
-
     public static FileBackedTasksManager loadFromFile(String path) {
         // I don't understand how it can be used with "protected".
         FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
