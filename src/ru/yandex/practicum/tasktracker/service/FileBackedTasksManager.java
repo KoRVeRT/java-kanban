@@ -23,9 +23,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     private static final String HEADER_TABLE_IN_FILE = "id,type,name,status,description,epic";
     private final String pathSave;
 
-    public FileBackedTasksManager(HistoryManager historyManager, String pathSave) {
+    public FileBackedTasksManager(HistoryManager historyManager, String path) {
         super(historyManager);
-        this.pathSave = pathSave;
+        this.pathSave = path;
     }
 
     public static FileBackedTasksManager loadFromFile(String path) {
