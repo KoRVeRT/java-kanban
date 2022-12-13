@@ -28,7 +28,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
     public static FileBackedTasksManager loadFromFile(String path) {
-        // Forced to remove the static modifier. I don't understand how it can be used with "protected".
+        // I don't understand how it can be used with "protected".
         FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
         try (BufferedReader reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8))) {
             reader.readLine(); // removing the table header
