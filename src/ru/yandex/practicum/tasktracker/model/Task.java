@@ -44,6 +44,10 @@ public class Task {
         this.description = description;
     }
 
+    public String toCsvRow() {
+        return String.format("%d,%s,%s,%s,%s", id, getType(), name, status, description);
+    }
+
     @Override
     public String toString() {
         return "Task{" +

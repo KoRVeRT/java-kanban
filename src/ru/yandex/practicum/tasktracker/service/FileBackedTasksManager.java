@@ -13,8 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -28,7 +26,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         this.pathSave = path;
     }
 
-    public static FileBackedTasksManager loadFromFile(String path) { ///???
+
+    public static FileBackedTasksManager loadFromFile(String path) {
+        // Forced to remove the static modifier. I don't understand how it can be used with "protected".
         FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
         try (BufferedReader reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8))) {
             reader.readLine(); // removing the table header
@@ -43,6 +43,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                     break;
                 }
                 loadTasksManager.recoverTask(loadTasksManager.fromString(taskLine));
+                loadTasksManager.generatorId += 1;
+              /*
+              Since we save an id of the last task after recovery, and when we add a task,
+              it is first assigned an id and only then incremented.
+              We lose the last task from recovery. So we add 1 to the id generator.
+               */
             }
             return loadTasksManager;
         } catch (IOException e) {
@@ -178,43 +184,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     private void save() {
-        try {
-            Path db = Path.of(Managers.pathFolder());
-            if (!Files.exists(db)) {
-                Files.createDirectory(db);
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException();
-        }
         try (Writer writer = new FileWriter(pathSave, StandardCharsets.UTF_8)) {
             writer.write(HEADER_TABLE_IN_FILE + "\n");
             for (Task task : tasks.values()) {
-                writer.write(toString(task) + "\n");
+                writer.write(task.toCsvRow() + "\n");
             }
             for (Epic epic : epics.values()) {
-                writer.write(toString(epic) + "\n");
+                writer.write(epic.toCsvRow() + "\n");
             }
             for (Subtask subtask : subTasks.values()) {
-                writer.write(toString(subtask) + "\n");
+                writer.write(subtask.toCsvRow() + "\n");
             }
             writer.write("\n" + historyToString(historyManager));
         } catch (IOException e) {
             throw new ManagerSaveException();
         }
-    }
-
-    private String toString(Task task) {
-        int idTask = task.getId();
-        String typeTask = task.getType().toString();
-        String nameTask = task.getName();
-        String statusTask = String.valueOf(task.getStatus());
-        String descriptionTask = task.getDescription();
-        if (!typeTask.equals(TaskType.SUBTASK.toString())) {
-            return String.format("%d,%s,%s,%s,%s", idTask, typeTask, nameTask, statusTask, descriptionTask);
-        }
-        Subtask subtask = (Subtask) task;
-        int epicSubtask = subtask.getEpicId();
-        return String.format("%d,%s,%s,%s,%s,%d", idTask, typeTask, nameTask, statusTask, descriptionTask, epicSubtask);
     }
 
     private Task fromString(String value) {

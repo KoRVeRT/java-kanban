@@ -19,6 +19,11 @@ public class Subtask extends Task {
     }
 
     @Override
+    public String toCsvRow() {
+        return super.toCsvRow() + "," + epicId;
+    }
+
+    @Override
     public String toString() {
         return "Subtask{" +
                 "name='" + getName() + '\'' +

@@ -7,18 +7,14 @@ import ru.yandex.practicum.tasktracker.service.TaskManager;
 
 public final class Managers {
     public static TaskManager getDefault() {
-        return new FileBackedTasksManager(new InMemoryHistoryManager(), pathSaveFile());
+        return new FileBackedTasksManager(getDefaultHistory(), pathSaveFile());
     }
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 
-    public static String pathSaveFile(){
+    public static String pathSaveFile() {
         return "db/saveManager.csv";
-    }
-
-    public static String pathFolder(){
-        return "db";
     }
 }

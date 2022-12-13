@@ -30,6 +30,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public String toCsvRow() {
+        return super.toCsvRow();
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
                 "name='" + getName() + '\'' +
