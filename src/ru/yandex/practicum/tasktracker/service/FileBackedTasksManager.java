@@ -27,7 +27,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public static FileBackedTasksManager loadFromFile(String path) {
-        // I don't understand how it can be used with "protected".
         FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
         try (BufferedReader reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8))) {
             reader.readLine(); // removing the table header
@@ -43,14 +42,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
                 loadTasksManager.recoverTask(loadTasksManager.fromString(taskLine));
             }
-            loadTasksManager.generatorId += 1;
             /*
             Since we save the id of the last task after recovery, and when adding a task, the id is first assigned to
             it, and only then incremented. We lose the last task from recovery. So we add 1 to the id generator.
              */
+            loadTasksManager.generatorId += 1;
             return loadTasksManager;
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("oops, error :|", e);
         }
     }
 
