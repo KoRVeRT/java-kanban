@@ -7,7 +7,7 @@ import ru.yandex.practicum.tasktracker.service.TaskManager;
 
 public final class Managers {
     public static TaskManager getDefault() {
-        return new FileBackedTasksManager(getDefaultHistory(), pathSaveFile());
+        return FileBackedTasksManager.loadFromFile(pathSaveFile());
     }
 
     public static HistoryManager getDefaultHistory() {
