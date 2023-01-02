@@ -5,6 +5,7 @@ import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.model.TaskType;
+import ru.yandex.practicum.tasktracker.service.exceptions.ManagerSaveException;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
 import java.io.BufferedReader;
@@ -13,15 +14,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    private static final String HEADER_TABLE_IN_FILE = "id,type,name,status,description,epic";
+    private static final String HEADER_TABLE_IN_FILE = "id,type,name,status,description,startTime,duration(min),endTime,epic";
     private final String pathSave;
 
-    protected FileBackedTasksManager(HistoryManager historyManager, String path) {
+    public FileBackedTasksManager(HistoryManager historyManager, String path) {
         super(historyManager);
         this.pathSave = path;
     }
@@ -30,7 +32,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
         try (BufferedReader reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8))) {
             // removing the table header or check that there is a header and the file is not empty
-            boolean checkHeader = reader.readLine() != null;
+            reader.readLine();
             while (reader.ready()) {
                 String taskLine = reader.readLine();
                 if (taskLine.isBlank()) {
@@ -43,14 +45,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
                 loadTasksManager.recoverTask(loadTasksManager.fromString(taskLine));
             }
-            /*
-            Since we save the id of the last task after recovery, and when adding a task, the id is first assigned to
-            it, and only then incremented. We lose the last task from recovery. So we add 1 to the id generator.
-             */
-            if (checkHeader) {
-                loadTasksManager.generatorId += 1;
-            }
-
             return loadTasksManager;
         } catch (IOException e) {
             throw new ManagerSaveException("oops, error :|", e);
@@ -162,6 +156,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             case SUBTASK -> subTasks.put(task.getId(), (Subtask) task);
             case EPIC -> epics.put(task.getId(), (Epic) task);
         }
+        prioritizedTasks.add(task);
         if (task.getId() > generatorId) {
             generatorId = task.getId();
         }
@@ -210,6 +205,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         String nameTask = arrayDataTask[2];
         TaskStatus statusTask = TaskStatus.valueOf(arrayDataTask[3]);
         String descriptionTask = arrayDataTask[4];
+        String startTime = !(arrayDataTask[5].equals("null")) ? arrayDataTask[5] : "null";
+        long duration = Long.parseLong(arrayDataTask[6]);
+        String endTime = arrayDataTask[7];
 
         switch (typeTask) {
             case TASK -> {
@@ -217,6 +215,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 task.setName(nameTask);
                 task.setStatus(statusTask);
                 task.setDescription(descriptionTask);
+                task.setStartTime(startTime);
+                task.setDuration(duration);
             }
             case SUBTASK -> {
                 Subtask subtask = new Subtask();
@@ -224,7 +224,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 subtask.setName(nameTask);
                 subtask.setStatus(statusTask);
                 subtask.setDescription(descriptionTask);
-                int epicId = Integer.parseInt(arrayDataTask[5]);
+                subtask.setStartTime(startTime);
+                subtask.setDuration(duration);
+                int epicId = Integer.parseInt(arrayDataTask[8]);
                 subtask.setEpicId(epicId);
                 Epic epic = epics.get(epicId);
                 epic.addSubtaskId(subtask.getId());
@@ -236,6 +238,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 epic.setName(nameTask);
                 epic.setStatus(statusTask);
                 epic.setDescription(descriptionTask);
+                epic.setStartTime(startTime);
+                epic.setDuration(duration);
+                if (!(endTime.equals("null"))) {
+                    epic.setEndTime(LocalDateTime.parse(endTime, Task.FORMATTER_OF_DATE));
+                }
                 task = epic;
             }
         }

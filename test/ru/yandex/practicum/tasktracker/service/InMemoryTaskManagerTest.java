@@ -1,5 +1,6 @@
 package ru.yandex.practicum.tasktracker.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
@@ -11,7 +12,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryTaskManagerTest {
-    private final TaskManager taskManager = new InMemoryTaskManager(new InMemoryHistoryManager());
+    protected static TaskManager taskManager;
+
+    @BeforeEach
+    void setUp() {
+        taskManager = createTaskManager();
+    }
+
+    protected TaskManager createTaskManager() {
+        return new InMemoryTaskManager(new InMemoryHistoryManager());
+    }
 
     @Test
     void getTaskById_shouldGetTaskByUseIdFromTaskManager_AndSaveTaskInHistoryManager() {
@@ -123,6 +133,29 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void addEpic_shouldSaveEpicInTaskManagerWithStatusInProgress() {
+        Epic epic1 = new Epic();
+        taskManager.addEpic(epic1);
+
+        Subtask subtask1 = new Subtask();
+        subtask1.setEpicId(epic1.getId());
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.addSubtask(subtask1);
+
+        Subtask subtask2 = new Subtask();
+        subtask2.setEpicId(epic1.getId());
+        subtask2.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.addSubtask(subtask2);
+
+        List<Epic> expected = List.of(epic1);
+        List<Epic> actual = taskManager.getAllEpics();
+        assertEquals(expected, actual);
+
+        assertEquals(TaskStatus.IN_PROGRESS, epic1.getStatus());
+
+    }
+
+    @Test
     void updateTask_shouldUpdateTaskInTaskManager() {
         Task task1 = new Task();
         task1.setStatus(TaskStatus.NEW);
@@ -143,7 +176,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void updateSubtask_shouldUpdateSubtask_AndChangeStatusOfEpicInTaskManager() {
+    void updateSubtask_shouldUpdateSubtask_AndChangeStatusDoneOfEpicInTaskManager() {
         Epic epic1 = new Epic();
         taskManager.addEpic(epic1);
 
@@ -263,10 +296,13 @@ class InMemoryTaskManagerTest {
     @Test
     void getAllTasks_shouldReturnAllTasksFromTaskManager() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
         Task task3 = new Task();
+        task3.setStatus(TaskStatus.NEW);
         taskManager.addTask(task3);
 
         Epic epic1 = new Epic();
@@ -287,8 +323,10 @@ class InMemoryTaskManagerTest {
     @Test
     void getAllSubtasks_shouldReturnAllSubtasksFromTaskManager() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();
@@ -314,8 +352,10 @@ class InMemoryTaskManagerTest {
     @Test
     void getAllEpics_shouldReturnAllEpicsFromTaskManager() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();
@@ -341,8 +381,10 @@ class InMemoryTaskManagerTest {
     @Test
     void getHistory_shouldReturnHistoryFromTaskManager() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();
@@ -372,8 +414,10 @@ class InMemoryTaskManagerTest {
     @Test
     void getSubtasksByEpicId_shouldReturnAllSubtasksFromEpic() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();
@@ -404,8 +448,10 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteAllTasks_shouldRemoveAllTasksFromTaskManager_AndHistoryManager() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();
@@ -447,8 +493,10 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteAllSubtasks_shouldRemoveAllSubtaskFromTaskManager_AndHistoryManager_AndChangeEpicsStatusForNew() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();
@@ -493,8 +541,10 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteAllEpics_shouldRemoveAllEpics_IncludingThemSubtaskFromTaskManager_AndHistoryManager() {
         Task task1 = new Task();
+        task1.setStatus(TaskStatus.NEW);
         taskManager.addTask(task1);
         Task task2 = new Task();
+        task2.setStatus(TaskStatus.NEW);
         taskManager.addTask(task2);
 
         Epic epic1 = new Epic();

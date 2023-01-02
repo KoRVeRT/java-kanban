@@ -1,4 +1,4 @@
-package ru.yandex.practicum.tasktracker.service;
+package ru.yandex.practicum.tasktracker.service.exceptions;
 
 public class ManagerSaveException extends RuntimeException {
     public ManagerSaveException() {

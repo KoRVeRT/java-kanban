@@ -7,6 +7,7 @@ import ru.yandex.practicum.tasktracker.model.Task;
 import java.util.List;
 
 public interface TaskManager {
+    List<Task> getPrioritizedTasks();
     List<Task> getAllTasks();
 
     List<Subtask> getAllSubTasks();
