@@ -288,15 +288,21 @@ class InMemoryTaskManagerTest {
     void updateTask_shouldUpdateTaskInTaskManager() {
         Task task1 = new Task();
         task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime("01.01.2023-00:45");
+        task1.setDuration(15);
         taskManager.addTask(task1);
 
         Task task2 = new Task();
         task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime("02.01.2023-11:45");
+        task2.setDuration(25);
         taskManager.addTask(task2);
 
         Task task3 = new Task();
         task3.setId(task2.getId());
         task3.setStatus(TaskStatus.NEW);
+        task3.setStartTime("03.01.2023-10:45");
+        task3.setDuration(45);
         taskManager.updateTask(task3);
 
         List<Task> expected = List.of(task1, task3);
@@ -305,30 +311,45 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void updateSubtask_shouldUpdateSubtask_AndChangeStatusDoneOfEpicInTaskManager() {
-        Epic epic1 = new Epic();
-        taskManager.addEpic(epic1);
+    void updateSubtask_shouldUpdateSubtask_AndChangeStatusDoneOfEpicInTaskManager_AndChangeTime() {
+        Epic epic = new Epic();
+        taskManager.addEpic(epic);
 
         Subtask subtask1 = new Subtask();
-        subtask1.setEpicId(epic1.getId());
+        subtask1.setEpicId(epic.getId());
         subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime("01.01.2023-00:45");
+        subtask1.setDuration(15);
         taskManager.addSubtask(subtask1);
 
         Subtask subtask2 = new Subtask();
-        subtask2.setEpicId(epic1.getId());
+        subtask2.setEpicId(epic.getId());
         subtask2.setStatus(TaskStatus.DONE);
+        subtask2.setStartTime("02.01.2023-00:45");
+        subtask2.setDuration(15);
         taskManager.addSubtask(subtask2);
+
 
         Subtask subtask3 = new Subtask();
         subtask3.setId(subtask1.getId());
-        subtask3.setEpicId(epic1.getId());
+        subtask3.setEpicId(epic.getId());
         subtask3.setStatus(TaskStatus.DONE);
+        subtask3.setStartTime("05.01.2023-12:45");
+        subtask3.setDuration(55);
         taskManager.updateSubtask(subtask3);
+
+        LocalDateTime start = subtask2.getStartTime();
+        LocalDateTime endTime = subtask3.getEndTime();
+        Duration duration = Duration.from(subtask3.getDuration()).plus(subtask2.getDuration());
+
+        assertEquals(start, taskManager.getEpicById(epic.getId()).getStartTime());
+        assertEquals(endTime, taskManager.getEpicById(epic.getId()).getEndTime());
+        assertEquals(duration, taskManager.getEpicById(epic.getId()).getDuration());
 
         List<Subtask> expected = List.of(subtask3, subtask2);
         List<Subtask> actual = taskManager.getAllSubTasks();
         assertEquals(expected, actual);
-        assertEquals(TaskStatus.DONE, epic1.getStatus());
+        assertEquals(TaskStatus.DONE, epic.getStatus());
     }
 
     @Test

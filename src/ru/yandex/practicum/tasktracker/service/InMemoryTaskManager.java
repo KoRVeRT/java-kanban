@@ -215,11 +215,11 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     }
 
     protected void calculateEpicParameters(Epic epic) {
-        epic.setStatus(calculateEpicStatus(epic));
-        epic.setDuration(calculateEpicDuration(epic));
+        calculateEpicStatus(epic);
+        calculateEpicTime(epic);
     }
 
-    private TaskStatus calculateEpicStatus(Epic epic) {
+    private void calculateEpicStatus(Epic epic) {
         boolean isNew = true;
         boolean isDone = true;
         for (Integer subtaskId : epic.getSubtaskIds()) {
@@ -235,15 +235,17 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
             }
         }
         if (!isNew && !isDone) {
-            return TaskStatus.IN_PROGRESS;
+            epic.setStatus(TaskStatus.IN_PROGRESS);
         } else if (isNew && !isDone) {
-            return TaskStatus.NEW;
+            epic.setStatus(TaskStatus.NEW);
         } else {
-            return TaskStatus.DONE;
+            epic.setStatus(TaskStatus.DONE);
         }
     }
 
-    private long calculateEpicDuration(Epic epic) {
+    private void calculateEpicTime(Epic epic) {
+        LocalDateTime start = null;
+        LocalDateTime endTime = null;
         Duration epicNewDuration = Duration.ofMinutes(0);
         for (Integer subtaskId : epic.getSubtaskIds()) {
             Subtask subtask = subTasks.get(subtaskId);
@@ -253,23 +255,17 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
             LocalDateTime subtaskStartTime = subtask.getStartTime();
             LocalDateTime subtaskEndTime = subtask.getEndTime();
             long subtaskDuration = subtask.getDuration().toMinutes();
-            if (epic.getStartTime() == null) {
-                epic.setStartTime(subtaskStartTime.format(Task.FORMATTER_OF_DATE));
-            } else {
-                if (subtaskStartTime.isBefore(epic.getStartTime())) {
-                    epic.setStartTime(subtaskStartTime.format(Task.FORMATTER_OF_DATE));
-                }
+            if (start == null || subtaskStartTime.isBefore(start)) {
+                start = subtaskStartTime;
             }
-            if (epic.getEndTime() == null) {
-                epic.setEndTime(subtaskEndTime);
-            } else {
-                if (subtaskEndTime.isAfter(epic.getEndTime())) {
-                    epic.setEndTime(subtask.getEndTime());
-                }
+            if (endTime == null || subtaskEndTime.isAfter(endTime)) {
+                endTime = subtaskEndTime;
             }
             epicNewDuration = epicNewDuration.plusMinutes(subtaskDuration);
         }
-        return epicNewDuration.toMinutes();
+        epic.setStartTime(start != null ? start.format(Task.FORMATTER_OF_DATE) : null);
+        epic.setEndTime(endTime);
+        epic.setDuration(epicNewDuration.toMinutes());
     }
 
     @Override
