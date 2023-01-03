@@ -7,9 +7,12 @@ import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class InMemoryTaskManagerTest {
     protected static TaskManager taskManager;
@@ -24,13 +27,69 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void getPrioritizedTasks_checkSortingTasks_andTasksWithoutStartTime() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+
+        Task task2 = new Task();
+        task2.setName("Выбросить мусор");
+        task2.setDescription("С этим делом лучше не медлить");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime("01.01.2023-00:45");
+        task2.setDuration(15);
+
+        Task task3 = new Task();
+        task3.setName("Купить колбасу");
+        task3.setDescription("Нужна докторская");
+        task3.setStatus(TaskStatus.NEW);
+        taskManager.addTask(task3);
+        // create epics
+        Epic epic1 = new Epic();
+        epic1.setName("Сделать ТЗ.");
+        epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
+        // add tasks and Epics
+        taskManager.addTask(task2);
+        taskManager.addTask(task1);
+        taskManager.addEpic(epic1);
+        // create subtasks
+        Subtask subtaskSprint1 = new Subtask();
+        subtaskSprint1.setName("Закончить тренажер");
+        subtaskSprint1.setDescription("Выполнить все задания в тренажере");
+        subtaskSprint1.setEpicId(epic1.getId());
+        subtaskSprint1.setStatus(TaskStatus.IN_PROGRESS);
+        subtaskSprint1.setStartTime("02.01.2023-01:00");
+        subtaskSprint1.setDuration(120);
+
+        Subtask subtaskSprint2 = new Subtask();
+        subtaskSprint2.setName("Посмотреть вебинар");
+        subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
+        subtaskSprint2.setEpicId(epic1.getId());
+        subtaskSprint2.setStatus(TaskStatus.NEW);
+        subtaskSprint2.setStartTime("01.01.2023-04:00");
+        subtaskSprint2.setDuration(120);
+        // add subtasks
+        taskManager.addSubtask(subtaskSprint2);
+        taskManager.addSubtask(subtaskSprint1);
+
+        List<Task> expected = List.of(task2, subtaskSprint2, subtaskSprint1, task3, task1);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void getTaskById_shouldGetTaskByUseIdFromTaskManager_AndSaveTaskInHistoryManager() {
         Task task1 = new Task();
         task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime("01.01.2023-00:45");
+        task1.setDuration(15);
         taskManager.addTask(task1);
 
         Task task2 = new Task();
         task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime("01.01.2023-00:45");
+        task2.setDuration(15);
         taskManager.addTask(task2);
 
         assertEquals(task1, taskManager.getTaskById(task1.getId()));
@@ -48,11 +107,15 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask();
         subtask1.setEpicId(epic1.getId());
         subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime("01.01.2023-00:45");
+        subtask1.setDuration(15);
         taskManager.addSubtask(subtask1);
 
         Subtask subtask2 = new Subtask();
         subtask2.setEpicId(epic1.getId());
         subtask2.setStatus(TaskStatus.DONE);
+        subtask2.setStartTime("02.01.2023-00:45");
+        subtask2.setDuration(15);
         taskManager.addSubtask(subtask2);
 
         assertEquals(subtask1, taskManager.getSubtaskById(subtask1.getId()));
@@ -81,10 +144,14 @@ class InMemoryTaskManagerTest {
     void addTask_shouldSaveTaskInTaskManager() {
         Task task1 = new Task();
         task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime("01.01.2023-00:45");
+        task1.setDuration(15);
         taskManager.addTask(task1);
 
         Task task2 = new Task();
         task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime("02.01.2023-00:45");
+        task2.setDuration(15);
         taskManager.addTask(task2);
 
         List<Task> expected = List.of(task1, task2);
@@ -100,11 +167,15 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask();
         subtask1.setEpicId(epic1.getId());
         subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime("01.01.2023-00:45");
+        subtask1.setDuration(15);
         taskManager.addSubtask(subtask1);
 
         Subtask subtask2 = new Subtask();
         subtask2.setEpicId(epic1.getId());
         subtask2.setStatus(TaskStatus.DONE);
+        subtask2.setStartTime("02.01.2023-00:45");
+        subtask2.setDuration(15);
         taskManager.addSubtask(subtask2);
 
         List<Subtask> expectedSubtask = List.of(subtask1, subtask2);
@@ -133,6 +204,43 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void addEpic_shouldCheckEpicTimeInTaskManagerWithSubtasks() {
+        Epic epic = new Epic();
+        taskManager.addEpic(epic);
+
+        Subtask subtask1 = new Subtask();
+        subtask1.setEpicId(epic.getId());
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime("01.01.2023-00:45");
+        subtask1.setDuration(15);
+        taskManager.addSubtask(subtask1);
+
+        Subtask subtask2 = new Subtask();
+        subtask2.setEpicId(epic.getId());
+        subtask2.setStatus(TaskStatus.DONE);
+        subtask2.setStartTime("02.01.2023-00:45");
+        subtask2.setDuration(15);
+        taskManager.addSubtask(subtask2);
+
+        LocalDateTime start = subtask1.getStartTime();
+        LocalDateTime endTime = subtask2.getEndTime();
+        Duration duration = Duration.from(subtask1.getDuration()).plus(subtask2.getDuration());
+
+        assertEquals(start, taskManager.getEpicById(epic.getId()).getStartTime());
+        assertEquals(endTime, taskManager.getEpicById(epic.getId()).getEndTime());
+        assertEquals(duration, taskManager.getEpicById(epic.getId()).getDuration());
+    }
+
+    @Test
+    void addEpic_shouldCheckEpicTimeInTaskManagerWithoutSubtasks() {
+        Epic epic = new Epic();
+        taskManager.addEpic(epic);
+
+        assertNull(taskManager.getEpicById(epic.getId()).getStartTime());
+        assertNull(taskManager.getEpicById(epic.getId()).getEndTime());
+    }
+
+    @Test
     void addEpic_shouldSaveEpicInTaskManagerWithStatusInProgress() {
         Epic epic1 = new Epic();
         taskManager.addEpic(epic1);
@@ -152,7 +260,28 @@ class InMemoryTaskManagerTest {
         assertEquals(expected, actual);
 
         assertEquals(TaskStatus.IN_PROGRESS, epic1.getStatus());
+    }
 
+    @Test
+    void addEpic_shouldSaveEpicInTaskManagerWithStatusInDone() {
+        Epic epic1 = new Epic();
+        taskManager.addEpic(epic1);
+
+        Subtask subtask1 = new Subtask();
+        subtask1.setEpicId(epic1.getId());
+        subtask1.setStatus(TaskStatus.DONE);
+        taskManager.addSubtask(subtask1);
+
+        Subtask subtask2 = new Subtask();
+        subtask2.setEpicId(epic1.getId());
+        subtask2.setStatus(TaskStatus.DONE);
+        taskManager.addSubtask(subtask2);
+
+        List<Epic> expected = List.of(epic1);
+        List<Epic> actual = taskManager.getAllEpics();
+        assertEquals(expected, actual);
+
+        assertEquals(TaskStatus.DONE, epic1.getStatus());
     }
 
     @Test

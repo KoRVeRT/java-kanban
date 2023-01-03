@@ -8,8 +8,9 @@ import ru.yandex.practicum.tasktracker.service.TaskManager;
 
 public final class Managers {
     public static String pathSaveFile = "db/saveManager.csv";
+    public static String pathSaveFileFromTest = "db/saveManagerTest.csv";
     public static TaskManager getDefault() {
-         return new FileBackedTasksManager(getDefaultHistory(), pathSaveFile);
+         return getFileBackedTasksManager();
     }
 
     public static HistoryManager getDefaultHistory() {
@@ -20,11 +21,19 @@ public final class Managers {
         return new FileBackedTasksManager(getDefaultHistory(), pathSaveFile);
     }
 
+    public static TaskManager getFileBackedTasksManagerTest() {
+        return new FileBackedTasksManager(getDefaultHistory(), pathSaveFileFromTest);
+    }
+
     public static InMemoryTaskManager getInMemoryTaskManager() {
         return new InMemoryTaskManager(getDefaultHistory());
     }
 
     public static FileBackedTasksManager loadFromFile() {
         return FileBackedTasksManager.loadFromFile(pathSaveFile);
+    }
+
+    public static FileBackedTasksManager loadFromFileTest() {
+        return FileBackedTasksManager.loadFromFile(pathSaveFileFromTest);
     }
 }

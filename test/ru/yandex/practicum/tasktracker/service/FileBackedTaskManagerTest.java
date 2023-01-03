@@ -1,5 +1,6 @@
 package ru.yandex.practicum.tasktracker.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
@@ -8,14 +9,26 @@ import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.service.exceptions.ManagerSaveException;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
-
     @Override
     protected TaskManager createTaskManager() {
-        return Managers.getFileBackedTasksManager();
+        return Managers.getFileBackedTasksManagerTest();
+    }
+    @BeforeEach
+    void clearUp()  {
+        try(Writer writer = new FileWriter(Managers.pathSaveFileFromTest,StandardCharsets.UTF_8)) {
+            writer.write("");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -50,7 +63,7 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         taskManager.getTaskById(task1.getId());
         taskManager.getEpicById(epic1.getId());
 
-        FileBackedTasksManager fileLoad = Managers.loadFromFile();
+        FileBackedTasksManager fileLoad = Managers.loadFromFileTest();
         assertEquals(taskManager.getAllTasks(), fileLoad.getAllTasks());
         assertEquals(taskManager.getAllSubTasks(), fileLoad.getAllSubTasks());
         assertEquals(taskManager.getAllEpics(), fileLoad.getAllEpics());
@@ -59,13 +72,22 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
 
     @Test
     void loadFromFile_shouldCheckSaveAndLoadManagerFromFile_OnlyOneEpic() {
-
         Epic epic1 = new Epic();
         epic1.setName("Сделать ТЗ.");
         epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
         taskManager.addEpic(epic1);
 
-        FileBackedTasksManager fileLoad = Managers.loadFromFile();
+        FileBackedTasksManager fileLoad = Managers.loadFromFileTest();
+        assertEquals(taskManager.getAllTasks(), fileLoad.getAllTasks());
+        assertEquals(taskManager.getAllSubTasks(), fileLoad.getAllSubTasks());
+        assertEquals(taskManager.getAllEpics(), fileLoad.getAllEpics());
+        assertEquals(taskManager.getHistory(), fileLoad.getHistory());
+    }
+
+    @Test
+    void loadFromFile_shouldCheckSaveAndLoadManagerFromFile_EmptyTaskList() {
+        FileBackedTasksManager fileLoad = Managers.loadFromFileTest();
+
         assertEquals(taskManager.getAllTasks(), fileLoad.getAllTasks());
         assertEquals(taskManager.getAllSubTasks(), fileLoad.getAllSubTasks());
         assertEquals(taskManager.getAllEpics(), fileLoad.getAllEpics());

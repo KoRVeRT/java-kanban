@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    private static final String HEADER_TABLE_IN_FILE = "id,type,name,status,description,startTime,duration(min),endTime,epic";
+    private static final String HEADER_TABLE_IN_FILE = "id,type,name,status,description,startTime,duration(min)," +
+            "endTime,epic";
     private final String pathSave;
 
     public FileBackedTasksManager(HistoryManager historyManager, String path) {

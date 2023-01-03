@@ -22,8 +22,8 @@ public class Main {
         task2.setName("Выбросить мусор");
         task2.setDescription("С этим делом лучше не медлить");
         task2.setStatus(TaskStatus.IN_PROGRESS);
-        task2.setStartTime("01.01.2023-00:10");
-        task2.setDuration(10);
+        task2.setStartTime("01.01.2023-00:45");
+        task2.setDuration(15);
         // create epics
         Epic epic1 = new Epic();
         epic1.setName("Сделать ТЗ.");

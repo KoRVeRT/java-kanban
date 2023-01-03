@@ -20,7 +20,8 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Subtask> subTasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
-    protected Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId));
+    protected Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
+            Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId));
     protected final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
@@ -33,26 +34,24 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     private void addToPrioritizedTasks(Task task) {
         prioritizedTasks.add(task);
-        //checkIntersections();
     }
 
-//    private void checkIntersections() {
-//
-//        var prioritizedTasks = getPrioritizedTasks();
-//
-//        for (int i = 1; i < prioritizedTasks.size(); i++) {
-//
-//            var prioritizedTask = prioritizedTasks.get(i);
-//
-//            if (prioritizedTask.getStartTime().isBefore(prioritizedTasks.get(i - 1).getEndTime()))
-//
-//                throw new IntersectionException("Найдено пересечение между "
-//                        + prioritizedTasks.get(i)
-//                        + " и "
-//                        + prioritizedTasks.get(i - 1));
-//        }
-//
-//    }
+    private boolean checkIntersections(Task task) {
+        if (task.getStartTime() == null) {
+            return true;
+        }
+        List<Task> prioritizedTasks = getPrioritizedTasks();
+        for (Task prioritizedTask : prioritizedTasks) {
+            if (prioritizedTask.getStartTime() == null) {
+                break;
+            }
+            if (task.getStartTime().isAfter(prioritizedTask.getStartTime())
+                    && task.getStartTime().isBefore(prioritizedTask.getEndTime())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     @Override
     public List<Task> getAllTasks() {
@@ -131,6 +130,9 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     @Override
     public void addTask(Task task) {
+        if (!(checkIntersections(task))) {
+            return;
+        }
         ++generatorId;
         task.setId(generatorId);
         tasks.put(generatorId, task);
@@ -139,6 +141,9 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     @Override
     public void addSubtask(Subtask subtask) {
+        if (!(checkIntersections(subtask))) {
+            return;
+        }
         ++generatorId;
         Epic epic = epics.get(subtask.getEpicId());
         subtask.setId(generatorId);
@@ -158,6 +163,9 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     @Override
     public void updateTask(Task task) {
+        if (!(checkIntersections(task))) {
+            return;
+        }
         tasks.put(task.getId(), task);
         addToPrioritizedTasks(task);
     }
@@ -170,6 +178,9 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        if (!(checkIntersections(subtask))) {
+            return;
+        }
         subTasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         calculateEpicParameters(epic);
