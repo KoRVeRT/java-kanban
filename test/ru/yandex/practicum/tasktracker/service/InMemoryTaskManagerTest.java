@@ -74,7 +74,7 @@ class InMemoryTaskManagerTest {
         taskManager.addSubtask(subtaskSprint2);
         taskManager.addSubtask(subtaskSprint1);
 
-        List<Task> expected = List.of(task2, subtaskSprint2, subtaskSprint1, task3, task1);
+        List<Task> expected = List.of(task2, subtaskSprint1, subtaskSprint2, task3, task1);
         List<Task> actual = taskManager.getPrioritizedTasks();
         assertEquals(expected, actual);
     }
