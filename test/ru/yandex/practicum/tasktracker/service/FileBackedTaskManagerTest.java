@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +39,8 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         task1.setName("Купить батон");
         task1.setDescription("Нужен свежий батон для бутербродов");
         task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 20));
+        task1.setDuration(15);
         // create epics
         Epic epic1 = new Epic();
         epic1.setName("Сделать ТЗ.");
@@ -45,20 +49,24 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         taskManager.addTask(task1);
         taskManager.addEpic(epic1);
         // create subtasks
-        Subtask subtaskSprint1 = new Subtask();
-        subtaskSprint1.setName("Закончить тренажер");
-        subtaskSprint1.setDescription("Выполнить все задания в тренажере");
-        subtaskSprint1.setEpicId(epic1.getId());
-        subtaskSprint1.setStatus(TaskStatus.IN_PROGRESS);
+        Subtask subtask1 = new Subtask();
+        subtask1.setName("Закончить тренажер");
+        subtask1.setDescription("Выполнить все задания в тренажере");
+        subtask1.setEpicId(epic1.getId());
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 20));
+        subtask1.setDuration(55);
 
-        Subtask subtaskSprint2 = new Subtask();
-        subtaskSprint2.setName("Посмотреть вебинар");
-        subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
-        subtaskSprint2.setEpicId(epic1.getId());
-        subtaskSprint2.setStatus(TaskStatus.NEW);
+        Subtask subtask2 = new Subtask();
+        subtask2.setName("Посмотреть вебинар");
+        subtask2.setDescription("Итоговый вебинар по ТЗ спринта №6");
+        subtask2.setEpicId(epic1.getId());
+        subtask2.setStatus(TaskStatus.NEW);
+        subtask2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 17, 20));
+        subtask2.setDuration(85);
         // add subtasks
-        taskManager.addSubtask(subtaskSprint1);
-        taskManager.addSubtask(subtaskSprint2);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
         // get tasks
         taskManager.getTaskById(task1.getId());
         taskManager.getEpicById(epic1.getId());
