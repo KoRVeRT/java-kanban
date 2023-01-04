@@ -107,11 +107,14 @@ public class Task {
         return Objects.equals(name, task.name)
                 && status == task.status
                 && Objects.equals(id, task.id)
-                && Objects.equals(description, task.description);
+                && Objects.equals(description, task.description)
+                && Objects.equals(startTime, task.startTime)
+                && Objects.equals(duration, task.duration)
+                ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, status, id, description);
+        return Objects.hash(name, status, id, description,startTime,duration);
     }
 }

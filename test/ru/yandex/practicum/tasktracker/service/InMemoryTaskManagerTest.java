@@ -45,6 +45,34 @@ class InMemoryTaskManagerTest {
         task3.setName("Купить колбасу");
         task3.setDescription("Нужна докторская");
         task3.setStatus(TaskStatus.NEW);
+        // add tasks
+        taskManager.addTask(task3);
+        taskManager.addTask(task2);
+        taskManager.addTask(task1);
+
+        List<Task> expected = List.of(task2, task3, task1);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getPrioritizedTasks_checkSortingTasks_andTasksWithoutStartTimeEE() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+
+        Task task2 = new Task();
+        task2.setName("Выбросить мусор");
+        task2.setDescription("С этим делом лучше не медлить");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
+        task2.setDuration(15);
+
+        Task task3 = new Task();
+        task3.setName("Купить колбасу");
+        task3.setDescription("Нужна докторская");
+        task3.setStatus(TaskStatus.NEW);
         taskManager.addTask(task3);
         // create epics
         Epic epic1 = new Epic();

@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
@@ -20,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Subtask> subTasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
-    protected Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
+    protected TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime,
             Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId));
     protected final HistoryManager historyManager;
 
@@ -37,23 +36,28 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     }
 
     private boolean checkIntersections(Task task) {
+        // if the priority list is empty, do not check
+        if (prioritizedTasks.isEmpty()) {
+            return true;
+        }
+        // if the task is without start time, then do not check
         if (task.getStartTime() == null) {
             return true;
         }
-        List<Task> prioritizedTasks = getPrioritizedTasks();
-        for (Task prioritizedTask : prioritizedTasks) {
-            if (prioritizedTask.getStartTime() == null) {
-                break;
-            }
-            if (prioritizedTask.getId() == task.getId()) {
-                continue;
-            }
-            if (task.getStartTime().isAfter(prioritizedTask.getStartTime())
-                    && task.getStartTime().isBefore(prioritizedTask.getEndTime())) {
-                return false;
-            }
+        Task preTask = prioritizedTasks.lower(task);
+        Task afterTask = prioritizedTasks.higher(task);
+        // if the next task has no start time do not check
+        if (preTask == null && afterTask.getStartTime() == null) {
+            return true;
         }
-        return true;
+        if (preTask == null) {
+            return !task.getEndTime().isAfter(afterTask.getStartTime());
+        }
+        if (afterTask == null) {
+            return !task.getStartTime().isBefore(preTask.getEndTime());
+        }
+        return !task.getEndTime().isAfter(afterTask.getStartTime())
+                || !task.getStartTime().isBefore(preTask.getEndTime());
     }
 
     @Override
@@ -168,6 +172,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     @Override
     public void updateTask(Task task) {
+        prioritizedTasks.removeIf(taskDelete -> taskDelete.getId() == task.getId());
         if (!(checkIntersections(task))) {
             return;
         }
@@ -183,6 +188,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        prioritizedTasks.removeIf(subtaskDelete -> subtaskDelete.getId() == subtask.getId());
         if (!(checkIntersections(subtask))) {
             return;
         }

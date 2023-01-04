@@ -25,7 +25,7 @@ public class Main {
         task2.setName("Выбросить мусор");
         task2.setDescription("С этим делом лучше не медлить");
         task2.setStatus(TaskStatus.IN_PROGRESS);
-        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,2,12,20));
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,13,25));
         task2.setDuration(15);
         // create epics
         Epic epic1 = new Epic();
@@ -59,7 +59,7 @@ public class Main {
         subtaskSprint2.setEpicId(epic1.getId());
         subtaskSprint2.setStatus(TaskStatus.NEW);
         subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,3,19,20));
-        subtaskSprint2.setDuration(120);
+        subtaskSprint2.setDuration(122);
         // add subtasks
         taskManager.addSubtask(subtaskSprint1);
         taskManager.addSubtask(subtaskSprint2);
