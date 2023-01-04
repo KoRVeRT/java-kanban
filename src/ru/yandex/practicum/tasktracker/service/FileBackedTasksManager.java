@@ -153,11 +153,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     private void recoverTask(Task task) {
         switch (task.getType()) {
-            case TASK -> tasks.put(task.getId(), task);
-            case SUBTASK -> subTasks.put(task.getId(), (Subtask) task);
+            case TASK -> {
+                tasks.put(task.getId(), task);
+                prioritizedTasks.add(task);
+            }
+            case SUBTASK -> {
+                subTasks.put(task.getId(), (Subtask) task);
+                prioritizedTasks.add(task);
+            }
             case EPIC -> epics.put(task.getId(), (Epic) task);
         }
-        prioritizedTasks.add(task);
         if (task.getId() > generatorId) {
             generatorId = task.getId();
         }
@@ -206,7 +211,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         String nameTask = arrayDataTask[2];
         TaskStatus statusTask = TaskStatus.valueOf(arrayDataTask[3]);
         String descriptionTask = arrayDataTask[4];
-        String startTime = !(arrayDataTask[5].equals("null")) ? arrayDataTask[5] : "null";
+        LocalDateTime startTime = arrayDataTask[5].equals("null") ? null : LocalDateTime.parse(arrayDataTask[5]);
         long duration = Long.parseLong(arrayDataTask[6]);
         String endTime = arrayDataTask[7];
 
@@ -242,7 +247,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 epic.setStartTime(startTime);
                 epic.setDuration(duration);
                 if (!(endTime.equals("null"))) {
-                    epic.setEndTime(LocalDateTime.parse(endTime, Task.FORMATTER_OF_DATE));
+                    epic.setEndTime(LocalDateTime.parse(endTime));
                 }
                 task = epic;
             }

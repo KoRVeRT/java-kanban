@@ -51,13 +51,11 @@ public class Task {
     }
 
     public String toCsvRow() {
-        String startTime = this.startTime != null ? this.startTime.format(Task.FORMATTER_OF_DATE) : null;
-        String getEndTime = getEndTime() != null ? getEndTime().format(FORMATTER_OF_DATE) : null;
         return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
                 id, getType(), name, status, description,
                 startTime,
                 duration.toMinutes(),
-                getEndTime);
+                getEndTime());
     }
 
     public LocalDateTime getStartTime() {
@@ -72,12 +70,8 @@ public class Task {
         }
     }
 
-    public void setStartTime(String date) {
-        if (!(date == null || date.equals("null"))) {
-            this.startTime = LocalDateTime.parse(date, FORMATTER_OF_DATE);
-        } else {
-            this.startTime = null;
-        }
+    public void setStartTime(LocalDateTime startTime) {
+            this.startTime = startTime;
     }
 
     public Duration getDuration() {

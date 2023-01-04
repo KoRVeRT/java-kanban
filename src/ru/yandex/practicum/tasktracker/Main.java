@@ -7,6 +7,9 @@ import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.service.TaskManager;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
@@ -15,14 +18,14 @@ public class Main {
         task1.setName("Купить батон");
         task1.setDescription("Нужен свежий батон для бутербродов");
         task1.setStatus(TaskStatus.NEW);
-        task1.setStartTime("01.01.2023-00:00");
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,20));
         task1.setDuration(45);
 
         Task task2 = new Task();
         task2.setName("Выбросить мусор");
         task2.setDescription("С этим делом лучше не медлить");
         task2.setStatus(TaskStatus.IN_PROGRESS);
-        task2.setStartTime("01.01.2023-00:45");
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,2,12,20));
         task2.setDuration(15);
         // create epics
         Epic epic1 = new Epic();
@@ -32,13 +35,22 @@ public class Main {
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addEpic(epic1);
+        // update task
+        Task task4 = new Task();
+        task4.setId(task1.getId());
+        task4.setName("Спать");
+        task4.setDescription("Срочно!");
+        task4.setStatus(TaskStatus.IN_PROGRESS);
+        task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,30));
+        task4.setDuration(20);
+        taskManager.updateTask(task4);
         // create subtasks
         Subtask subtaskSprint1 = new Subtask();
         subtaskSprint1.setName("Закончить тренажер");
         subtaskSprint1.setDescription("Выполнить все задания в тренажере");
         subtaskSprint1.setEpicId(epic1.getId());
         subtaskSprint1.setStatus(TaskStatus.IN_PROGRESS);
-        subtaskSprint1.setStartTime("01.01.2023-01:00");
+        subtaskSprint1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,3,12,20));
         subtaskSprint1.setDuration(120);
 
         Subtask subtaskSprint2 = new Subtask();
@@ -46,7 +58,7 @@ public class Main {
         subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
         subtaskSprint2.setEpicId(epic1.getId());
         subtaskSprint2.setStatus(TaskStatus.NEW);
-        subtaskSprint2.setStartTime("01.01.2023-04:00");
+        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,3,19,20));
         subtaskSprint2.setDuration(120);
         // add subtasks
         taskManager.addSubtask(subtaskSprint1);
@@ -61,13 +73,14 @@ public class Main {
         System.out.println(taskManager.getHistory());
         taskManager.getSubtaskById(subtaskSprint2.getId());
         System.out.println(taskManager.getHistory());
-        System.out.println(taskManager.getHistory());
         taskManager.getTaskById(task2.getId());
         System.out.println(taskManager.getHistory());
         taskManager.getSubtaskById(subtaskSprint1.getId());
         System.out.println(taskManager.getHistory());
         taskManager.getTaskById(task1.getId());
         System.out.println(taskManager.getHistory());
+        System.out.println("//");
+        System.out.println(taskManager.getPrioritizedTasks());
          // new taskManager2
         System.out.println();
         TaskManager taskManager2 = Managers.loadFromFile();
@@ -76,7 +89,7 @@ public class Main {
         task3.setName("Купить колбасу");
         task3.setDescription("Нужна докторская");
         task3.setStatus(TaskStatus.NEW);
-        task3.setStartTime("01.01.2023-14:00");
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY,5,12,20));
         task3.setDuration(25);
         taskManager2.addTask(task3);
         // create epic
@@ -90,14 +103,14 @@ public class Main {
         subtaskDinner.setDescription("Купить продукты для приготовления");
         subtaskDinner.setEpicId(epic3.getId());
         subtaskDinner.setStatus(TaskStatus.IN_PROGRESS);
-        subtaskDinner.setStartTime("01.01.2023-11:00");
+        subtaskDinner.setStartTime(LocalDateTime.of(2022, Month.JANUARY,5,18,20));
         subtaskDinner.setDuration(45);
         taskManager2.addSubtask(subtaskDinner);
+        taskManager2.deleteEpicById(epic3.getId());
         // print
         System.out.println(taskManager2.getTaskById(task3.getId()));
-        System.out.println(taskManager2.getEpicById(epic3.getId()));
-        System.out.println(taskManager2.getSubtaskById(subtaskDinner.getId()));
         System.out.println(taskManager2.getHistory());
+        System.out.println("//");
         System.out.println(taskManager2.getPrioritizedTasks());
     }
 }
