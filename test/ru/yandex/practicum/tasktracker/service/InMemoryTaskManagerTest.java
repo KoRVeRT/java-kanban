@@ -104,7 +104,164 @@ class InMemoryTaskManagerTest {
         taskManager.addSubtask(subtaskSprint2);
         taskManager.addSubtask(subtaskSprint1);
 
-        List<Task> expected = List.of(task3,subtaskSprint1, subtaskSprint2, task1);
+        List<Task> expected = List.of(task3, subtaskSprint1, subtaskSprint2, task1);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void deleteAllTasks_checkDeleteAllTasksInPrioritizedTasks() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 20));
+        task1.setDuration(45);
+
+        Task task2 = new Task();
+        task2.setName("Выбросить мусор");
+        task2.setDescription("С этим делом лучше не медлить");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
+        task2.setDuration(15);
+
+        Task task3 = new Task();
+        task3.setName("Выбросить мусор");
+        task3.setDescription("С этим делом лучше не медлить");
+        task3.setStatus(TaskStatus.IN_PROGRESS);
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 3, 12, 20));
+        task3.setDuration(15);
+
+        Epic epic1 = new Epic();
+        epic1.setName("Сделать ТЗ.");
+        epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
+        taskManager.addEpic(epic1);
+
+        Subtask subtask1 = new Subtask();
+        subtask1.setName("Закончить тренажер");
+        subtask1.setDescription("Выполнить все задания в тренажере");
+        subtask1.setEpicId(epic1.getId());
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask1.setDuration(120);
+
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.addSubtask(subtask1);
+        // delete tasks
+        taskManager.deleteAllTasks();
+
+        List<Task> expected = List.of(subtask1);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void deleteAllSubtasks_checkDeleteAllSubtasksInPrioritizedTasks_AndCheckNewTimeOfEpic() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 20));
+        task1.setDuration(45);
+
+        Epic epic1 = new Epic();
+        epic1.setName("Сделать ТЗ.");
+        epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
+        taskManager.addEpic(epic1);
+
+        Subtask subtask1 = new Subtask();
+        subtask1.setName("Закончить тренажер");
+        subtask1.setDescription("Выполнить все задания в тренажере");
+        subtask1.setEpicId(epic1.getId());
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask1.setDuration(120);
+
+        Subtask subtask2 = new Subtask();
+        subtask2.setName("Закончить тренажер");
+        subtask2.setDescription("Выполнить все задания в тренажере");
+        subtask2.setEpicId(epic1.getId());
+        subtask2.setStatus(TaskStatus.IN_PROGRESS);
+        subtask2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask2.setDuration(120);
+
+        Subtask subtask3 = new Subtask();
+        subtask3.setName("Закончить тренажер");
+        subtask3.setDescription("Выполнить все задания в тренажере");
+        subtask3.setEpicId(epic1.getId());
+        subtask3.setStatus(TaskStatus.IN_PROGRESS);
+        subtask3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask3.setDuration(120);
+
+        taskManager.addTask(task1);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
+
+        taskManager.deleteAllSubtasks();
+
+        List<Task> expected = List.of(task1);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+
+        assertNull(epic1.getStartTime());
+        assertNull(epic1.getEndTime());
+        assertEquals(0, epic1.getDuration().toMinutes());
+    }
+
+    @Test
+    void deleteAllEpics_checkDeleteAllSubtasksInPrioritizedTasks_AndDeleteAllSubtasks() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 20));
+        task1.setDuration(45);
+
+        Epic epic1 = new Epic();
+        epic1.setName("Сделать ТЗ.");
+        epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
+        taskManager.addEpic(epic1);
+
+        Epic epic2 = new Epic();
+        epic2.setName("Выбрать стол");
+        epic2.setDescription("Нужен стол");
+        taskManager.addEpic(epic2);
+
+        Subtask subtask1 = new Subtask();
+        subtask1.setName("Закончить тренажер1");
+        subtask1.setDescription("Выполнить все задания в тренажере");
+        subtask1.setEpicId(epic1.getId());
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask1.setDuration(120);
+
+        Subtask subtask2 = new Subtask();
+        subtask2.setName("Закончить тренажер2");
+        subtask2.setDescription("Выполнить все задания в тренажере");
+        subtask2.setEpicId(epic1.getId());
+        subtask2.setStatus(TaskStatus.IN_PROGRESS);
+        subtask2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask2.setDuration(120);
+
+        Subtask subtask3 = new Subtask();
+        subtask3.setName("Купить стол");
+        subtask3.setDescription("В магазине");
+        subtask3.setEpicId(epic2.getId());
+        subtask3.setStatus(TaskStatus.IN_PROGRESS);
+        subtask3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 10, 12, 20));
+        subtask3.setDuration(120);
+
+        taskManager.addTask(task1);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
+
+        taskManager.deleteAllEpics();
+
+        List<Task> expected = List.of(task1);
         List<Task> actual = taskManager.getPrioritizedTasks();
         assertEquals(expected, actual);
     }

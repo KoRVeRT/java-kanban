@@ -4,6 +4,7 @@ import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
+import ru.yandex.practicum.tasktracker.model.TaskType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -93,6 +94,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllTasks() {
         tasks.keySet().forEach(historyManager::remove);
         tasks.clear();
+        prioritizedTasks.removeIf(task -> task.getType() == TaskType.TASK);
     }
 
     @Override
@@ -101,8 +103,12 @@ public class InMemoryTaskManager implements TaskManager {
         epics.values().forEach(epic -> {
             epic.clearSubtaskIds();
             epic.setStatus(TaskStatus.NEW);
+            epic.setStartTime(null);
+            epic.setDuration(0);
+            epic.setEndTime(null);
         });
         subTasks.clear();
+        prioritizedTasks.removeIf(task -> task.getType() == TaskType.SUBTASK);
     }
 
     @Override
@@ -111,6 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.keySet().forEach(historyManager::remove);
         epics.clear();
         subTasks.clear();
+        prioritizedTasks.removeIf(task -> task.getType() == TaskType.SUBTASK);
     }
 
     @Override

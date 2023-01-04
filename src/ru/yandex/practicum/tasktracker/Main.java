@@ -44,6 +44,8 @@ public class Main {
         task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,30));
         task4.setDuration(20);
         taskManager.updateTask(task4);
+        // delete
+        taskManager.deleteTaskById(task2.getId());
         // create subtasks
         Subtask subtaskSprint1 = new Subtask();
         subtaskSprint1.setName("Закончить тренажер");
@@ -67,19 +69,16 @@ public class Main {
         System.out.println();
         taskManager.getTaskById(task1.getId());
         System.out.println(taskManager.getHistory());
-        taskManager.getTaskById(task2.getId());
         System.out.println(taskManager.getHistory());
         taskManager.getEpicById(epic1.getId());
         System.out.println(taskManager.getHistory());
         taskManager.getSubtaskById(subtaskSprint2.getId());
         System.out.println(taskManager.getHistory());
-        taskManager.getTaskById(task2.getId());
         System.out.println(taskManager.getHistory());
         taskManager.getSubtaskById(subtaskSprint1.getId());
         System.out.println(taskManager.getHistory());
         taskManager.getTaskById(task1.getId());
         System.out.println(taskManager.getHistory());
-        System.out.println("//");
         System.out.println(taskManager.getPrioritizedTasks());
          // new taskManager2
         System.out.println();
@@ -106,11 +105,10 @@ public class Main {
         subtaskDinner.setStartTime(LocalDateTime.of(2022, Month.JANUARY,5,18,20));
         subtaskDinner.setDuration(45);
         taskManager2.addSubtask(subtaskDinner);
-        taskManager2.deleteEpicById(epic3.getId());
+        taskManager2.deleteAllTasks();
         // print
-        System.out.println(taskManager2.getTaskById(task3.getId()));
+        //System.out.println(taskManager2.getTaskById(task3.getId()));
         System.out.println(taskManager2.getHistory());
-        System.out.println("//");
         System.out.println(taskManager2.getPrioritizedTasks());
     }
 }
