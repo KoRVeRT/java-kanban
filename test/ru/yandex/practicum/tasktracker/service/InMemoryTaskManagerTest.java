@@ -28,7 +28,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getPrioritizedTasks_checkSortingTasks_andTasksWithoutStartTime() {
+    void getPrioritizedTasks_checkSortingTasks_andTwoTasksWithoutStartTime() {
         Task task1 = new Task();
         task1.setName("Купить батон");
         task1.setDescription("Нужен свежий батон для бутербродов");
@@ -56,7 +56,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getPrioritizedTasks_checkSortingTasks_andTasksWithoutStartTimeEE() {
+    void getPrioritizedTasks_checkSortingTasks_andOneTasksWithIntersectionStartTime() {
         Task task1 = new Task();
         task1.setName("Купить батон");
         task1.setDescription("Нужен свежий батон для бутербродов");
@@ -67,18 +67,20 @@ class InMemoryTaskManagerTest {
         task2.setDescription("С этим делом лучше не медлить");
         task2.setStatus(TaskStatus.IN_PROGRESS);
         task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
-        task2.setDuration(15);
+        task2.setDuration(60);
 
         Task task3 = new Task();
         task3.setName("Купить колбасу");
         task3.setDescription("Нужна докторская");
         task3.setStatus(TaskStatus.NEW);
-        taskManager.addTask(task3);
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 13, 15));
+        task3.setDuration(25);
         // create epics
         Epic epic1 = new Epic();
         epic1.setName("Сделать ТЗ.");
         epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
         // add tasks and Epics
+        taskManager.addTask(task3);
         taskManager.addTask(task2);
         taskManager.addTask(task1);
         taskManager.addEpic(epic1);
@@ -96,13 +98,13 @@ class InMemoryTaskManagerTest {
         subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
         subtaskSprint2.setEpicId(epic1.getId());
         subtaskSprint2.setStatus(TaskStatus.NEW);
-        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 4, 12, 20));
+        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 20, 20));
         subtaskSprint2.setDuration(120);
         // add subtasks
         taskManager.addSubtask(subtaskSprint2);
         taskManager.addSubtask(subtaskSprint1);
 
-        List<Task> expected = List.of(task2, subtaskSprint1, subtaskSprint2, task3, task1);
+        List<Task> expected = List.of(task3,subtaskSprint1, subtaskSprint2, task1);
         List<Task> actual = taskManager.getPrioritizedTasks();
         assertEquals(expected, actual);
     }

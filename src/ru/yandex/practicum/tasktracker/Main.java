@@ -32,9 +32,9 @@ public class Main {
         epic1.setName("Сделать ТЗ.");
         epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
         // add tasks and Epics
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
         taskManager.addEpic(epic1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task1);
         // update task
         Task task4 = new Task();
         task4.setId(task1.getId());
@@ -50,7 +50,7 @@ public class Main {
         subtaskSprint1.setDescription("Выполнить все задания в тренажере");
         subtaskSprint1.setEpicId(epic1.getId());
         subtaskSprint1.setStatus(TaskStatus.IN_PROGRESS);
-        subtaskSprint1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,3,12,20));
+        subtaskSprint1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,21,20));
         subtaskSprint1.setDuration(120);
 
         Subtask subtaskSprint2 = new Subtask();
@@ -58,11 +58,11 @@ public class Main {
         subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
         subtaskSprint2.setEpicId(epic1.getId());
         subtaskSprint2.setStatus(TaskStatus.NEW);
-        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,3,19,20));
+        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,23,55));
         subtaskSprint2.setDuration(122);
         // add subtasks
-        taskManager.addSubtask(subtaskSprint1);
         taskManager.addSubtask(subtaskSprint2);
+        taskManager.addSubtask(subtaskSprint1);
         // print
         System.out.println();
         taskManager.getTaskById(task1.getId());

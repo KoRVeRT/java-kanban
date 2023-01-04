@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
+public class InMemoryTaskManager implements TaskManager {
     protected int generatorId;
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Subtask> subTasks = new HashMap<>();
@@ -36,16 +36,15 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
     }
 
     private boolean checkIntersections(Task task) {
-        // if the priority list is empty, do not check
-        if (prioritizedTasks.isEmpty()) {
-            return true;
-        }
         // if the task is without start time, then do not check
         if (task.getStartTime() == null) {
             return true;
         }
         Task preTask = prioritizedTasks.lower(task);
         Task afterTask = prioritizedTasks.higher(task);
+        if (preTask == null && afterTask == null) {
+            return true;
+        }
         // if the next task has no start time do not check
         if (preTask == null && afterTask.getStartTime() == null) {
             return true;
@@ -53,7 +52,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
         if (preTask == null) {
             return !task.getEndTime().isAfter(afterTask.getStartTime());
         }
-        if (afterTask == null) {
+        if (afterTask == null || afterTask.getStartTime() == null) {
             return !task.getStartTime().isBefore(preTask.getEndTime());
         }
         return !task.getEndTime().isAfter(afterTask.getStartTime())
@@ -280,18 +279,5 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
         epic.setStartTime(start);
         epic.setEndTime(endTime);
         epic.setDuration(epicNewDuration.toMinutes());
-    }
-
-    @Override
-    public int compare(Task o1, Task o2) {
-        if (o1.getStartTime() == null && o2.getStartTime() != null) {
-            return -1;
-        } else if (o1.getStartTime() != null && o2.getStartTime() == null) {
-            return 1;
-        } else if (o1.getStartTime() == null && o2.getStartTime() == null) {
-            return 0;
-        } else {
-            return o1.getStartTime().compareTo(o2.getStartTime());
-        }
     }
 }
