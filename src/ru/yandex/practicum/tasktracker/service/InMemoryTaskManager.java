@@ -5,6 +5,7 @@ import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.model.TaskType;
+import ru.yandex.practicum.tasktracker.service.exceptions.IntersectionException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -41,23 +42,43 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStartTime() == null) {
             return true;
         }
-        Task preTaskOfStartTime = prioritizedTasks.lower(task);
-        Task afterTaskOfStartTime = prioritizedTasks.higher(task);
-        if (preTaskOfStartTime == null && afterTaskOfStartTime == null) {
-            return true;
+        try {
+            Task preTaskOfStartTime = prioritizedTasks.lower(task);
+            Task afterTaskOfStartTime = prioritizedTasks.higher(task);
+            if (preTaskOfStartTime == null && afterTaskOfStartTime == null) {
+                return true;
+            }
+            // if the next task has no start time do not check
+            if (preTaskOfStartTime == null && afterTaskOfStartTime.getStartTime() == null) {
+                return true;
+            }
+            if (preTaskOfStartTime == null) {
+                if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
+                    throw new IntersectionException("Intersection between \"" + task.getName()
+                            + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
+                }
+                return true;
+            }
+            if (afterTaskOfStartTime == null || afterTaskOfStartTime.getStartTime() == null) {
+                if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
+                    throw new IntersectionException("Intersection between \"" + task.getName()
+                            + "\" and \"" + preTaskOfStartTime.getName() + "\"");
+                }
+                return true;
+            }
+            if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
+                throw new IntersectionException("Intersection between \"" + task.getName()
+                        + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
+            }
+            if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
+                throw new IntersectionException("Intersection between \"" + task.getName()
+                        + "\" and \"" + preTaskOfStartTime.getName() + "\"");
+            }
+        } catch (IntersectionException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
-        // if the next task has no start time do not check
-        if (preTaskOfStartTime == null && afterTaskOfStartTime.getStartTime() == null) {
-            return true;
-        }
-        if (preTaskOfStartTime == null) {
-            return !task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime());
-        }
-        if (afterTaskOfStartTime == null || afterTaskOfStartTime.getStartTime() == null) {
-            return !task.getStartTime().isBefore(preTaskOfStartTime.getEndTime());
-        }
-        return !task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())
-                || !task.getStartTime().isBefore(preTaskOfStartTime.getEndTime());
+        return true;
     }
 
     @Override

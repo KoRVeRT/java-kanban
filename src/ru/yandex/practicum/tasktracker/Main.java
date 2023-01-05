@@ -25,7 +25,7 @@ public class Main {
         task2.setName("Выбросить мусор");
         task2.setDescription("С этим делом лучше не медлить");
         task2.setStatus(TaskStatus.IN_PROGRESS);
-        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,13,0));
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,13,25));
         task2.setDuration(15);
         // create epics
         Epic epic1 = new Epic();
@@ -42,10 +42,8 @@ public class Main {
         task4.setDescription("Срочно!");
         task4.setStatus(TaskStatus.IN_PROGRESS);
         task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,30));
-        task4.setDuration(20);
+        task4.setDuration(56);
         taskManager.updateTask(task4);
-        // delete
-        taskManager.deleteTaskById(task2.getId());
         // create subtasks
         Subtask subtaskSprint1 = new Subtask();
         subtaskSprint1.setName("Закончить тренажер");
@@ -105,7 +103,6 @@ public class Main {
         subtaskDinner.setStartTime(LocalDateTime.of(2022, Month.JANUARY,5,18,20));
         subtaskDinner.setDuration(45);
         taskManager2.addSubtask(subtaskDinner);
-        taskManager2.deleteAllTasks();
         // print
         System.out.println(taskManager2.getHistory());
         System.out.println(taskManager2.getPrioritizedTasks());
