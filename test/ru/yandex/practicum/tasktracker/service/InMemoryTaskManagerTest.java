@@ -56,6 +56,37 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void getPrioritizedTasks_checkUpdateTaskWithSameStartTime() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+
+        Task task2 = new Task();
+        task2.setName("Выбросить мусор");
+        task2.setDescription("С этим делом лучше не медлить");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
+        task2.setDuration(15);
+
+        taskManager.addTask(task2);
+        taskManager.addTask(task1);
+
+        Task task3 = new Task();
+        task3.setId(task2.getId());
+        task3.setName("Купить колбасу");
+        task3.setDescription("Нужна докторская");
+        task3.setStatus(TaskStatus.NEW);
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
+        task3.setDuration(15);
+        taskManager.updateTask(task3);
+
+        List<Task> expected = List.of(task3, task1);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void getPrioritizedTasks_checkSortingTasks_andOneTasksWithIntersectionStartTime() {
         Task task1 = new Task();
         task1.setName("Купить батон");

@@ -41,23 +41,23 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStartTime() == null) {
             return true;
         }
-        Task preTask = prioritizedTasks.lower(task);
-        Task afterTask = prioritizedTasks.higher(task);
-        if (preTask == null && afterTask == null) {
+        Task preTaskOfStartTime = prioritizedTasks.lower(task);
+        Task afterTaskOfStartTime = prioritizedTasks.higher(task);
+        if (preTaskOfStartTime == null && afterTaskOfStartTime == null) {
             return true;
         }
         // if the next task has no start time do not check
-        if (preTask == null && afterTask.getStartTime() == null) {
+        if (preTaskOfStartTime == null && afterTaskOfStartTime.getStartTime() == null) {
             return true;
         }
-        if (preTask == null) {
-            return !task.getEndTime().isAfter(afterTask.getStartTime());
+        if (preTaskOfStartTime == null) {
+            return !task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime());
         }
-        if (afterTask == null || afterTask.getStartTime() == null) {
-            return !task.getStartTime().isBefore(preTask.getEndTime());
+        if (afterTaskOfStartTime == null || afterTaskOfStartTime.getStartTime() == null) {
+            return !task.getStartTime().isBefore(preTaskOfStartTime.getEndTime());
         }
-        return !task.getEndTime().isAfter(afterTask.getStartTime())
-                || !task.getStartTime().isBefore(preTask.getEndTime());
+        return !task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())
+                || !task.getStartTime().isBefore(preTaskOfStartTime.getEndTime());
     }
 
     @Override
