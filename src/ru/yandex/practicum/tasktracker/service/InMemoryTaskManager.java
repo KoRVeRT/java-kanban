@@ -199,8 +199,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        // Since the updated task is deleted before checking
+        // and if the updated task will not be added, you must return the old one.
+        Task tempTask = tasks.get(task.getId());
         prioritizedTasks.removeIf(taskDelete -> taskDelete.getId() == task.getId());
         if (!(checkIntersections(task))) {
+            prioritizedTasks.add(tempTask);
             return;
         }
         tasks.put(task.getId(), task);
@@ -215,8 +219,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        // Since the updated subtask is deleted before checking
+        // and if the updated subtask will not be added, you must return the old one.
+        Subtask tempSubtask = subTasks.get(subtask.getId());
         prioritizedTasks.removeIf(subtaskDelete -> subtaskDelete.getId() == subtask.getId());
         if (!(checkIntersections(subtask))) {
+            prioritizedTasks.add(tempSubtask);
             return;
         }
         subTasks.put(subtask.getId(), subtask);

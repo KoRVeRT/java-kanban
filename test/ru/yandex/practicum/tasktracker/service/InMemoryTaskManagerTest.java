@@ -56,7 +56,109 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getPrioritizedTasks_checkUpdateTaskWithSameStartTime() {
+    void updateTask_checkUpdateIfTaskCouldNotAdd() {
+        Task task1 = new Task();
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
+        task1.setDuration(15);
+
+        Task task2 = new Task();
+        task2.setName("Выбросить мусор");
+        task2.setDescription("С этим делом лучше не медлить");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 35));
+        task2.setDuration(25);
+
+        Task task3 = new Task();
+        task3.setName("Купить воду");
+        task3.setDescription("Нет воды");
+        task3.setStatus(TaskStatus.NEW);
+        task3.setStatus(TaskStatus.IN_PROGRESS);
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 13, 0));
+        task3.setDuration(25);
+
+        // add tasks
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+
+        Task task4 = new Task();
+        task4.setId(task2.getId());
+        task4.setName("Купить манку");
+        task4.setDescription("Нужна каша");
+        task4.setStatus(TaskStatus.NEW);
+        task4.setStatus(TaskStatus.IN_PROGRESS);
+        task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 34));
+        task4.setDuration(70);
+        // update
+        taskManager.updateTask(task4);
+
+        List<Task> expected = List.of(task1, task2, task3);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void updateSubtask_checkUpdateIfSubtaskCouldNotAdd() {
+        Epic epic1 = new Epic();
+        epic1.setName("Задания на день.");
+        epic1.setDescription("Большой список");
+        // add epic
+        taskManager.addEpic(epic1);
+
+        Subtask task1 = new Subtask();
+        task1.setEpicId(epic1.getId());
+        task1.setName("Купить батон");
+        task1.setDescription("Нужен свежий батон для бутербродов");
+        task1.setStatus(TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 20));
+        task1.setDuration(15);
+
+        Subtask task2 = new Subtask();
+        task2.setEpicId(epic1.getId());
+        task2.setName("Выбросить мусор");
+        task2.setDescription("С этим делом лучше не медлить");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 35));
+        task2.setDuration(25);
+
+        Subtask task3 = new Subtask();
+        task3.setEpicId(epic1.getId());
+        task3.setName("Купить воду");
+        task3.setDescription("Нет воды");
+        task3.setStatus(TaskStatus.NEW);
+        task3.setStatus(TaskStatus.IN_PROGRESS);
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 13, 0));
+        task3.setDuration(25);
+
+
+
+        // add tasks
+        taskManager.addSubtask(task1);
+        taskManager.addSubtask(task2);
+        taskManager.addSubtask(task3);
+
+        Subtask task4 = new Subtask();
+        task4.setEpicId(epic1.getId());
+        task4.setId(task2.getId());
+        task4.setName("Купить манку");
+        task4.setDescription("Нужна каша");
+        task4.setStatus(TaskStatus.NEW);
+        task4.setStatus(TaskStatus.IN_PROGRESS);
+        task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 12, 34));
+        task4.setDuration(70);
+        // update
+        taskManager.updateSubtask(task4);
+
+        List<Task> expected = List.of(task1, task2, task3);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void updateTask_checkUpdateTaskWithSameStartTime() {
         Task task1 = new Task();
         task1.setName("Купить батон");
         task1.setDescription("Нужен свежий батон для бутербродов");

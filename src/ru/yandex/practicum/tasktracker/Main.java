@@ -42,7 +42,7 @@ public class Main {
         task4.setDescription("Срочно!");
         task4.setStatus(TaskStatus.IN_PROGRESS);
         task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,30));
-        task4.setDuration(56);
+        task4.setDuration(50);
         taskManager.updateTask(task4);
         // create subtasks
         Subtask subtaskSprint1 = new Subtask();
