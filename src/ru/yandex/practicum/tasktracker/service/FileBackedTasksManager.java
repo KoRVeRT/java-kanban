@@ -188,14 +188,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     private void save() {
         try (Writer writer = new FileWriter(pathSave, StandardCharsets.UTF_8)) {
             writer.write(HEADER_TABLE_IN_FILE + "\n");
-            for (Task task : tasks.values()) {
-                writer.write(task.toCsvRow() + "\n");
-            }
-            for (Epic epic : epics.values()) {
-                writer.write(epic.toCsvRow() + "\n");
-            }
-            for (Subtask subtask : subTasks.values()) {
-                writer.write(subtask.toCsvRow() + "\n");
+            for (int i = 1; i <= generatorId; i++) {
+                Task task = tasks.get(i);
+                if (task != null) {
+                    writer.write(task.toCsvRow() + "\n");
+                    continue;
+                }
+                Epic epic = epics.get(i);
+                if (epic != null) {
+                    writer.write(epic.toCsvRow() + "\n");
+                    continue;
+                }
+                Subtask subtask = subTasks.get(i);
+                if (subtask != null) {
+                    writer.write(subtask.toCsvRow() + "\n");
+                }
             }
             writer.write("\n" + historyToString(historyManager));
         } catch (IOException e) {
