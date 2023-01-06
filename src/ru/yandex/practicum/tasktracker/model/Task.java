@@ -6,13 +6,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
+    public final static DateTimeFormatter FORMATTER_OF_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm");
+
     private Integer id;
     private String name;
     private TaskStatus status;
     private String description;
     protected LocalDateTime startTime;
     protected Duration duration = Duration.ofMinutes(0);
-    public final static DateTimeFormatter FORMATTER_OF_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm");
+
 
     public String getName() {
         return name;
@@ -71,7 +73,7 @@ public class Task {
     }
 
     public void setStartTime(LocalDateTime startTime) {
-            this.startTime = startTime;
+        this.startTime = startTime;
     }
 
     public Duration getDuration() {
@@ -109,12 +111,11 @@ public class Task {
                 && Objects.equals(id, task.id)
                 && Objects.equals(description, task.description)
                 && Objects.equals(startTime, task.startTime)
-                && Objects.equals(duration, task.duration)
-                ;
+                && Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, status, id, description,startTime,duration);
+        return Objects.hash(name, status, id, description, startTime, duration);
     }
 }
