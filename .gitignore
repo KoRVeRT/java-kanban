@@ -23,4 +23,5 @@
 hs_err_pid*
 /.idea/
 /lib/
-/db/
+/resources/saveManager.csv
+/resources/
