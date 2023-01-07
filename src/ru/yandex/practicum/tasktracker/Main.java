@@ -18,14 +18,14 @@ public class Main {
         task1.setName("Купить батон");
         task1.setDescription("Нужен свежий батон для бутербродов");
         task1.setStatus(TaskStatus.NEW);
-        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,20));
+        task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 20));
         task1.setDuration(25);
 
         Task task2 = new Task();
         task2.setName("Выбросить мусор");
         task2.setDescription("С этим делом лучше не медлить");
         task2.setStatus(TaskStatus.IN_PROGRESS);
-        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,13,25));
+        task2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 13, 25));
         task2.setDuration(15);
         // create epics
         Epic epic1 = new Epic();
@@ -42,7 +42,7 @@ public class Main {
         task4.setName("Спать");
         task4.setDescription("Срочно!");
         task4.setStatus(TaskStatus.IN_PROGRESS);
-        task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,30));
+        task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 12, 30));
         task4.setDuration(25);
         taskManager.updateTask(task4);
         // create subtasks
@@ -51,7 +51,7 @@ public class Main {
         subtaskSprint1.setDescription("Выполнить все задания в тренажере");
         subtaskSprint1.setEpicId(epic1.getId());
         subtaskSprint1.setStatus(TaskStatus.IN_PROGRESS);
-        subtaskSprint1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,21,20));
+        subtaskSprint1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 21, 20));
         subtaskSprint1.setDuration(120);
 
         Subtask subtaskSprint2 = new Subtask();
@@ -59,7 +59,7 @@ public class Main {
         subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
         subtaskSprint2.setEpicId(epic1.getId());
         subtaskSprint2.setStatus(TaskStatus.NEW);
-        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,23,55));
+        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 23, 55));
         subtaskSprint2.setDuration(122);
         // add subtasks
         taskManager.addSubtask(subtaskSprint2);
@@ -79,7 +79,7 @@ public class Main {
         taskManager.getTaskById(task1.getId());
         System.out.println(taskManager.getHistory());
         System.out.println(taskManager.getPrioritizedTasks());
-         // new taskManager2
+        // new taskManager2
         System.out.println();
         TaskManager taskManager2 = Managers.loadFromFile();
         // create task
@@ -87,7 +87,7 @@ public class Main {
         task3.setName("Купить колбасу");
         task3.setDescription("Нужна докторская");
         task3.setStatus(TaskStatus.NEW);
-        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY,5,12,20));
+        task3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 5, 12, 20));
         task3.setDuration(25);
         taskManager2.addTask(task3);
         // create epic
@@ -101,7 +101,7 @@ public class Main {
         subtaskDinner.setDescription("Купить продукты для приготовления");
         subtaskDinner.setEpicId(epic3.getId());
         subtaskDinner.setStatus(TaskStatus.IN_PROGRESS);
-        subtaskDinner.setStartTime(LocalDateTime.of(2022, Month.JANUARY,5,18,20));
+        subtaskDinner.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 5, 18, 20));
         subtaskDinner.setDuration(45);
         taskManager2.addSubtask(subtaskDinner);
         // print
