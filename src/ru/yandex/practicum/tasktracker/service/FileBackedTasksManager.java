@@ -5,7 +5,7 @@ import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.model.TaskType;
-import ru.yandex.practicum.tasktracker.service.exceptions.ManagerSaveException;
+import ru.yandex.practicum.tasktracker.service.exception.ManagerSaveException;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
 import java.io.BufferedReader;
@@ -217,7 +217,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         TaskType typeTask = TaskType.valueOf(arrayDataTask[1]);
         String nameTask = arrayDataTask[2];
         TaskStatus statusTask = TaskStatus.valueOf(arrayDataTask[3]);
-        String descriptionTask = arrayDataTask[4];
+        String descriptionTask = arrayDataTask[4].equals("null") ? null : arrayDataTask[4];
         LocalDateTime startTime = arrayDataTask[5].equals("null") ? null : LocalDateTime.parse(arrayDataTask[5]);
         long duration = Long.parseLong(arrayDataTask[6]);
         String endTime = arrayDataTask[7];

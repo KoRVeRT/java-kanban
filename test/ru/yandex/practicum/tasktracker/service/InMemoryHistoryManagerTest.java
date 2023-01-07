@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class InMemoryHistoryServiceTest {
+class InMemoryHistoryManagerTest {
     private final HistoryManager historyManager = new InMemoryHistoryManager();
 
     @Test

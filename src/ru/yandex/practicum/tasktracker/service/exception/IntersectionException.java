@@ -1,4 +1,4 @@
-package ru.yandex.practicum.tasktracker.service.exceptions;
+package ru.yandex.practicum.tasktracker.service.exception;
 
 public class IntersectionException extends RuntimeException {
     public IntersectionException() {

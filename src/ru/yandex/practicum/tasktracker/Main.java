@@ -19,7 +19,7 @@ public class Main {
         task1.setDescription("Нужен свежий батон для бутербродов");
         task1.setStatus(TaskStatus.NEW);
         task1.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,20));
-        task1.setDuration(45);
+        task1.setDuration(25);
 
         Task task2 = new Task();
         task2.setName("Выбросить мусор");
@@ -35,6 +35,7 @@ public class Main {
         taskManager.addEpic(epic1);
         taskManager.addTask(task2);
         taskManager.addTask(task1);
+
         // update task
         Task task4 = new Task();
         task4.setId(task1.getId());
@@ -42,7 +43,7 @@ public class Main {
         task4.setDescription("Срочно!");
         task4.setStatus(TaskStatus.IN_PROGRESS);
         task4.setStartTime(LocalDateTime.of(2022, Month.JANUARY,1,12,30));
-        task4.setDuration(50);
+        task4.setDuration(25);
         taskManager.updateTask(task4);
         // create subtasks
         Subtask subtaskSprint1 = new Subtask();

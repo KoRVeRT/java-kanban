@@ -6,6 +6,7 @@ import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
+import ru.yandex.practicum.tasktracker.service.exception.IntersectionException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryTaskManagerTest {
     protected static TaskManager taskManager;
@@ -134,7 +136,6 @@ class InMemoryTaskManagerTest {
         task3.setDuration(25);
 
 
-
         // add tasks
         taskManager.addSubtask(task1);
         taskManager.addSubtask(task2);
@@ -213,33 +214,12 @@ class InMemoryTaskManagerTest {
         epic1.setName("Сделать ТЗ.");
         epic1.setDescription("Итоговое ТЗ по 6 спринту в Яндекс.Практикуме");
         // add tasks and Epics
-        taskManager.addTask(task3);
         taskManager.addTask(task2);
         taskManager.addTask(task1);
         taskManager.addEpic(epic1);
-        // create subtasks
-        Subtask subtaskSprint1 = new Subtask();
-        subtaskSprint1.setName("Закончить тренажер");
-        subtaskSprint1.setDescription("Выполнить все задания в тренажере");
-        subtaskSprint1.setEpicId(epic1.getId());
-        subtaskSprint1.setStatus(TaskStatus.IN_PROGRESS);
-        subtaskSprint1.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
-        subtaskSprint1.setDuration(120);
-
-        Subtask subtaskSprint2 = new Subtask();
-        subtaskSprint2.setName("Посмотреть вебинар");
-        subtaskSprint2.setDescription("Итоговый вебинар по ТЗ спринта №6");
-        subtaskSprint2.setEpicId(epic1.getId());
-        subtaskSprint2.setStatus(TaskStatus.NEW);
-        subtaskSprint2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 20, 20));
-        subtaskSprint2.setDuration(120);
-        // add subtasks
-        taskManager.addSubtask(subtaskSprint2);
-        taskManager.addSubtask(subtaskSprint1);
-
-        List<Task> expected = List.of(task3, subtaskSprint1, subtaskSprint2, task1);
-        List<Task> actual = taskManager.getPrioritizedTasks();
-        assertEquals(expected, actual);
+        IntersectionException exception = assertThrows(IntersectionException.class,
+                () -> taskManager.addTask(task3));
+        assertEquals("Intersection between \"Купить колбасу\" and \"Выбросить мусор\"", exception.getMessage());
     }
 
     @Test
@@ -317,7 +297,7 @@ class InMemoryTaskManagerTest {
         subtask2.setDescription("Выполнить все задания в тренажере");
         subtask2.setEpicId(epic1.getId());
         subtask2.setStatus(TaskStatus.IN_PROGRESS);
-        subtask2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 3, 15, 20));
         subtask2.setDuration(120);
 
         Subtask subtask3 = new Subtask();
@@ -325,7 +305,7 @@ class InMemoryTaskManagerTest {
         subtask3.setDescription("Выполнить все задания в тренажере");
         subtask3.setEpicId(epic1.getId());
         subtask3.setStatus(TaskStatus.IN_PROGRESS);
-        subtask3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 2, 15, 20));
+        subtask3.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 4, 15, 20));
         subtask3.setDuration(120);
 
         taskManager.addTask(task1);

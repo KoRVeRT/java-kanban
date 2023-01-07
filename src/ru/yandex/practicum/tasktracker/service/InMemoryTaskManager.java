@@ -5,7 +5,7 @@ import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.model.TaskType;
-import ru.yandex.practicum.tasktracker.service.exceptions.IntersectionException;
+import ru.yandex.practicum.tasktracker.service.exception.IntersectionException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,56 +29,9 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = historyManager;
     }
 
+    @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
-    }
-
-    private void addToPrioritizedTasks(Task task) {
-        prioritizedTasks.add(task);
-    }
-
-    private boolean checkIntersections(Task task) {
-        // if the task is without start time, then do not check
-        if (task.getStartTime() == null) {
-            return true;
-        }
-        try {
-            Task preTaskOfStartTime = prioritizedTasks.lower(task);
-            Task afterTaskOfStartTime = prioritizedTasks.higher(task);
-            if (preTaskOfStartTime == null && afterTaskOfStartTime == null) {
-                return true;
-            }
-            // if the next task has no start time do not check
-            if (preTaskOfStartTime == null && afterTaskOfStartTime.getStartTime() == null) {
-                return true;
-            }
-            if (preTaskOfStartTime == null) {
-                if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
-                    throw new IntersectionException("Intersection between \"" + task.getName()
-                            + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
-                }
-                return true;
-            }
-            if (afterTaskOfStartTime == null || afterTaskOfStartTime.getStartTime() == null) {
-                if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
-                    throw new IntersectionException("Intersection between \"" + task.getName()
-                            + "\" and \"" + preTaskOfStartTime.getName() + "\"");
-                }
-                return true;
-            }
-            if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
-                throw new IntersectionException("Intersection between \"" + task.getName()
-                        + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
-            }
-            if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
-                throw new IntersectionException("Intersection between \"" + task.getName()
-                        + "\" and \"" + preTaskOfStartTime.getName() + "\"");
-            }
-        } catch (IntersectionException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -166,27 +119,21 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task) {
         ++generatorId;
         task.setId(generatorId);
-        if (!(checkIntersections(task))) {
-            --generatorId;
-            return;
-        }
+        checkIntersections(task);
         tasks.put(generatorId, task);
-        addToPrioritizedTasks(task);
+        prioritizedTasks.add(task);
     }
 
     @Override
     public void addSubtask(Subtask subtask) {
         ++generatorId;
         subtask.setId(generatorId);
-        if (!(checkIntersections(subtask))) {
-            --generatorId;
-            return;
-        }
+        checkIntersections(subtask);
         Epic epic = epics.get(subtask.getEpicId());
         subTasks.put(generatorId, subtask);
         epic.addSubtaskId(generatorId);
         calculateEpicParameters(epic);
-        addToPrioritizedTasks(subtask);
+        prioritizedTasks.add(subtask);
     }
 
     @Override
@@ -203,12 +150,9 @@ public class InMemoryTaskManager implements TaskManager {
         // and if the updated task will not be added, you must return the old one.
         Task updateTask = tasks.get(task.getId());
         prioritizedTasks.remove(updateTask);
-        if (!(checkIntersections(task))) {
-            prioritizedTasks.add(updateTask);
-            return;
-        }
+        checkIntersections(task);
         tasks.put(task.getId(), task);
-        addToPrioritizedTasks(task);
+        prioritizedTasks.add(task);
     }
 
     @Override
@@ -223,14 +167,11 @@ public class InMemoryTaskManager implements TaskManager {
         // and if the updated subtask will not be added, you must return the old one.
         Subtask updateSubtask = subTasks.get(subtask.getId());
         prioritizedTasks.remove(updateSubtask);
-        if (!(checkIntersections(subtask))) {
-            prioritizedTasks.add(updateSubtask);
-            return;
-        }
+        checkIntersections(subtask);
         subTasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         calculateEpicParameters(epic);
-        addToPrioritizedTasks(subtask);
+        prioritizedTasks.add(subtask);
     }
 
     @Override
@@ -266,6 +207,44 @@ public class InMemoryTaskManager implements TaskManager {
     protected void calculateEpicParameters(Epic epic) {
         calculateEpicStatus(epic);
         calculateEpicTime(epic);
+    }
+
+    private void checkIntersections(Task task) {
+        // if the task is without start time, then do not check
+        if (task.getStartTime() == null) {
+            return;
+        }
+        Task preTaskOfStartTime = prioritizedTasks.lower(task);
+        Task afterTaskOfStartTime = prioritizedTasks.higher(task);
+        if (preTaskOfStartTime == null && afterTaskOfStartTime == null) {
+            return;
+        }
+        // if the next task has no start time do not check
+        if (preTaskOfStartTime == null && afterTaskOfStartTime.getStartTime() == null) {
+            return;
+        }
+        if (preTaskOfStartTime == null) {
+            if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
+                throw new IntersectionException("Intersection between \"" + task.getName()
+                        + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
+            }
+            return;
+        }
+        if (afterTaskOfStartTime == null || afterTaskOfStartTime.getStartTime() == null) {
+            if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
+                throw new IntersectionException("Intersection between \"" + task.getName()
+                        + "\" and \"" + preTaskOfStartTime.getName() + "\"");
+            }
+            return;
+        }
+        if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
+            throw new IntersectionException("Intersection between \"" + task.getName()
+                    + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
+        }
+        if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
+            throw new IntersectionException("Intersection between \"" + task.getName()
+                    + "\" and \"" + preTaskOfStartTime.getName() + "\"");
+        }
     }
 
     private void calculateEpicStatus(Epic epic) {
