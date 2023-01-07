@@ -104,11 +104,24 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         taskManager.addEpic(epic2);
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
+        // get from manager
         taskManager.getTaskById(task1.getId());
         taskManager.getEpicById(epic1.getId());
         taskManager.getSubtaskById(subtask1.getId());
         taskManager.getTaskById(task3.getId());
-        // Read from file
+        // Read text from file
+        StringBuilder actual = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(pathSaveFileFromTest, StandardCharsets.UTF_8))) {
+            while (reader.ready()) {
+                String line = reader.readLine();
+                if (line.isBlank()) {
+                    line = reader.readLine();
+                    actual.append("\n").append(line);
+                    break;
+                }
+                actual.append(line).append("\n");
+            }
+        }
         String expected = """
                 id,type,name,status,description,startTime,duration(min),endTime,epic
                 1,TASK,Task1,NEW,null,2022-01-01T12:20,15,2022-01-01T12:35
@@ -120,20 +133,8 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
                 7,SUBTASK,Subtask2,DONE,null,2022-01-01T18:25,45,2022-01-01T19:10,4
 
                 1,4,6,3""";
-        StringBuilder textFromFile = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(pathSaveFileFromTest, StandardCharsets.UTF_8))) {
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line.isBlank()) {
-                    line = reader.readLine();
-                    textFromFile.append("\n").append(line);
-                    break;
-                }
-                textFromFile.append(line).append("\n");
-            }
-        }
-        String actual = textFromFile.toString();
-        assertEquals(expected, actual);
+
+        assertEquals(expected, actual.toString());
     }
 
     @Test
@@ -142,7 +143,7 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
 
         ManagerSaveException exception = assertThrows(ManagerSaveException.class,
                 () -> FileBackedTasksManager.loadFromFile(filePath));
-        assertEquals("oops, error :|", exception.getMessage());
+        assertEquals("File to download not found", exception.getMessage());
     }
 
     private Task createTask(int id, String name, TaskStatus status, String startTime, long duration) {

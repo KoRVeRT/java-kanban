@@ -48,7 +48,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             }
             return loadTasksManager;
         } catch (IOException e) {
-            throw new ManagerSaveException("oops, error :|", e);
+            throw new ManagerSaveException("File to download not found", e);
         }
     }
 
