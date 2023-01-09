@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
-    public final static DateTimeFormatter FORMATTER_OF_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm");
+    public static final DateTimeFormatter FORMATTER_OF_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm");
 
     private Integer id;
     private String name;
@@ -67,9 +67,8 @@ public class Task {
     public LocalDateTime getEndTime() {
         if (startTime != null) {
             return startTime.plus(duration);
-        } else {
-            return null;
         }
+        return null;
     }
 
     public void setStartTime(LocalDateTime startTime) {

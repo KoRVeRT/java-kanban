@@ -57,11 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Subtask> getSubtasksByEpicId(int epicId) {
         Epic epic = epics.get(epicId);
-        List<Subtask> epicSubtasks = new ArrayList<>();
-        for (Integer subtaskId : epic.getSubtaskIds()) {
-            epicSubtasks.add(subTasks.get(subtaskId));
-        }
-        return epicSubtasks;
+        return epic.getSubtaskIds().stream().map(subTasks::get).toList();
     }
 
     @Override
@@ -132,7 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         subTasks.put(generatorId, subtask);
         epic.addSubtaskId(generatorId);
-        calculateEpicParameters(epic);
+        updateEpic(epic);
         prioritizedTasks.add(subtask);
     }
 
@@ -156,7 +152,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
-        calculateEpicParameters(epic);
+        calculateEpicStatus(epic);
+        calculateEpicTime(epic);
         epics.put(epic.getId(), epic);
     }
 
@@ -168,7 +165,7 @@ public class InMemoryTaskManager implements TaskManager {
         checkIntersections(subtask);
         subTasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
-        calculateEpicParameters(epic);
+        updateEpic(epic);
         prioritizedTasks.add(subtask);
     }
 
@@ -186,7 +183,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         subTasks.remove(subtaskId);
         epic.removeSubtaskId(subtaskId);
-        calculateEpicParameters(epic);
+        updateEpic(epic);
         historyManager.remove(subtaskId);
     }
 
@@ -202,13 +199,9 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(epicId);
     }
 
-    protected void calculateEpicParameters(Epic epic) {
-        calculateEpicStatus(epic);
-        calculateEpicTime(epic);
-    }
-
     private void checkIntersections(Task task) {
         // if the task is without start time, then do not check
+        String textErrorMessage = "Intersection between \"%s\" and \"%s\"";
         if (task.getStartTime() == null) {
             return;
         }
@@ -223,25 +216,25 @@ public class InMemoryTaskManager implements TaskManager {
         }
         if (preTaskOfStartTime == null) {
             if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
-                throw new IntersectionException("Intersection between \"" + task.getName()
-                        + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
+                throw new IntersectionException(textErrorMessage.formatted(task.getName(),
+                        afterTaskOfStartTime.getName()));
             }
             return;
         }
         if (afterTaskOfStartTime == null || afterTaskOfStartTime.getStartTime() == null) {
             if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
-                throw new IntersectionException("Intersection between \"" + task.getName()
-                        + "\" and \"" + preTaskOfStartTime.getName() + "\"");
+                throw new IntersectionException(textErrorMessage.formatted(task.getName(),
+                        preTaskOfStartTime.getName()));
             }
             return;
         }
         if (task.getEndTime().isAfter(afterTaskOfStartTime.getStartTime())) {
-            throw new IntersectionException("Intersection between \"" + task.getName()
-                    + "\" and \"" + afterTaskOfStartTime.getName() + "\"");
+            throw new IntersectionException(textErrorMessage.formatted(task.getName(),
+                    afterTaskOfStartTime.getName()));
         }
         if (task.getStartTime().isBefore(preTaskOfStartTime.getEndTime())) {
-            throw new IntersectionException("Intersection between \"" + task.getName()
-                    + "\" and \"" + preTaskOfStartTime.getName() + "\"");
+            throw new IntersectionException(textErrorMessage.formatted(task.getName(),
+                    preTaskOfStartTime.getName()));
         }
     }
 

@@ -104,6 +104,7 @@ public class Main {
         subtaskDinner.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 5, 18, 20));
         subtaskDinner.setDuration(45);
         taskManager2.addSubtask(subtaskDinner);
+        taskManager2.getSubtasksByEpicId(epic3.getId());
         // print
         System.out.println(taskManager2.getHistory());
         System.out.println(taskManager2.getPrioritizedTasks());

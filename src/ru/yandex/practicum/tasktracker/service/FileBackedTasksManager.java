@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    private static final String HEADER_TABLE_IN_FILE = "id,type,name,status,description,startTime,duration(min)," +
+    private static final String CSV_FILE_HEADER = "id,type,name,status,description,startTime,duration(min)," +
             "endTime,epic";
     private final String pathSave;
 
@@ -30,23 +30,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public static FileBackedTasksManager loadFromFile(String path) {
-        FileBackedTasksManager loadTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
+        FileBackedTasksManager tasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), path);
         try (BufferedReader reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8))) {
-            // removing the table header or check that there is a header and the file is not empty
-            reader.readLine();
             while (reader.ready()) {
                 String taskLine = reader.readLine();
+                // removing the table header or check that there is a header and the file is not empty
+                if (taskLine.equals(CSV_FILE_HEADER)) {
+                    taskLine = reader.readLine();
+                }
                 if (taskLine.isBlank()) {
                     String idTasksHistory = reader.readLine();
-                    if (idTasksHistory == null) {
-                        break;
+                    if (idTasksHistory != null) {
+                        tasksManager.recoverHistory(historyFromString(idTasksHistory));
                     }
-                    loadTasksManager.recoverHistory(historyFromString(idTasksHistory));
                     break;
                 }
-                loadTasksManager.recoverTask(loadTasksManager.fromString(taskLine));
+                tasksManager.recoverTask(tasksManager.fromString(taskLine));
             }
-            return loadTasksManager;
+            return tasksManager;
         } catch (IOException e) {
             throw new ManagerSaveException("File to download not found", e);
         }
@@ -145,8 +146,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         save();
     }
 
-    private void recoverHistory(List<Integer> IdTasksHistory) {
-        for (Integer task : IdTasksHistory) {
+    private void recoverHistory(List<Integer> idTasksHistory) {
+        for (Integer task : idTasksHistory) {
             historyManager.add(searchTask(task));
         }
     }
@@ -169,38 +170,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     private static String historyToString(HistoryManager manager) {
-        StringJoiner joiner = new StringJoiner(",");
-        for (Task task : manager.getHistory()) {
-            joiner.add(String.valueOf(task.getId()));
-        }
-        return joiner.toString();
+        return manager.getHistory().stream()
+                .map(task -> String.valueOf(task.getId()))
+                .collect(Collectors.joining(","));
     }
 
     private static List<Integer> historyFromString(String history) {
-        List<Integer> idTasksHistory = new ArrayList<>();
-        String[] tasks = history.split(",");
-        for (String task : tasks) {
-            idTasksHistory.add(Integer.valueOf(task));
-        }
-        return idTasksHistory;
+        return Arrays.stream(history.split(",")).map(Integer::valueOf).toList();
     }
 
     private void save() {
         try (Writer writer = new FileWriter(pathSave, StandardCharsets.UTF_8)) {
-            writer.write(HEADER_TABLE_IN_FILE + "\n");
+            writer.write(CSV_FILE_HEADER + "\n");
             for (int i = 1; i <= generatorId; i++) {
                 Task task = tasks.get(i);
+                Epic epic = epics.get(i);
+                Subtask subtask = subTasks.get(i);
                 if (task != null) {
                     writer.write(task.toCsvRow() + "\n");
-                    continue;
-                }
-                Epic epic = epics.get(i);
-                if (epic != null) {
+                } else if (epic != null) {
                     writer.write(epic.toCsvRow() + "\n");
-                    continue;
-                }
-                Subtask subtask = subTasks.get(i);
-                if (subtask != null) {
+                } else if (subtask != null) {
                     writer.write(subtask.toCsvRow() + "\n");
                 }
             }

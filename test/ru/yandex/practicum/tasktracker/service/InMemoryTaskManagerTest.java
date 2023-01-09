@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryTaskManagerTest {
-    protected static TaskManager taskManager;
+    protected TaskManager taskManager;
 
     @BeforeEach
     void setUp() {
@@ -68,38 +68,6 @@ class InMemoryTaskManagerTest {
         taskManager.updateSubtask(subtask3);
 
         List<Task> expected = List.of(subtask3, subtask2);
-        List<Task> actual = taskManager.getPrioritizedTasks();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getPrioritizedTasks_checkSortingTwoTasksWithoutStartTime_TasksShouldBeAtEndOfList() {
-        // create task
-        Task task1 = createTask(1, "Task1", TaskStatus.NEW, "null", 0);
-        Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
-        // create epics
-        Epic epic = createEpic(4, "Epic", "null", "null", List.of());
-        // create subtasks
-        Subtask subtask1 = createSubtask(4, "Subtask1", epic.getId(), TaskStatus.NEW,
-                "01.01.2022-15:25",
-                75);
-        Subtask subtask2 = createSubtask(4, "Subtask2", epic.getId(), TaskStatus.DONE,
-                "01.01.2022-18:25",
-                45);
-        Subtask subtask3 = createSubtask(4, "Subtask3", epic.getId(), TaskStatus.DONE,
-                "01.01.2022-21:40",
-                45);
-        // add to manager
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-        taskManager.addTask(task3);
-        taskManager.addEpic(epic);
-        taskManager.addSubtask(subtask1);
-        taskManager.addSubtask(subtask2);
-        taskManager.addSubtask(subtask3);
-
-        List<Task> expected = List.of(task2, subtask1, subtask2, subtask3, task1, task3);
         List<Task> actual = taskManager.getPrioritizedTasks();
         assertEquals(expected, actual);
     }
@@ -229,7 +197,39 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getPrioritizedTasks_checkSortingTasksOfStartTime() {
+    void getPrioritizedTasks_checkSortingTwoTasksWithoutStartTimeById_TasksShouldBeAtEndOfList() {
+        // create task
+        Task task1 = createTask(1, "Task1", TaskStatus.NEW, "null", 0);
+        Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        // create epics
+        Epic epic = createEpic(4, "Epic", "null", "null", List.of());
+        // create subtasks
+        Subtask subtask1 = createSubtask(4, "Subtask1", epic.getId(), TaskStatus.NEW,
+                "01.01.2022-15:25",
+                75);
+        Subtask subtask2 = createSubtask(4, "Subtask2", epic.getId(), TaskStatus.DONE,
+                "01.01.2022-18:25",
+                45);
+        Subtask subtask3 = createSubtask(4, "Subtask3", epic.getId(), TaskStatus.DONE,
+                "01.01.2022-21:40",
+                45);
+        // add to manager
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.addEpic(epic);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
+
+        List<Task> expected = List.of(task2, subtask1, subtask2, subtask3, task1, task3);
+        List<Task> actual = taskManager.getPrioritizedTasks();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getPrioritizedTasks_checkSortingTasksOfStartTime_AndOneTaskWithoutStartTimeShouldBeAtEndOfList() {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
@@ -593,7 +593,7 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic);
 
         assertNull(taskManager.getEpicById(epic.getId()).getStartTime());
-        assertEquals(taskManager.getEpicById(epic.getId()).getDuration().toMinutes(), 0);
+        assertEquals(0, taskManager.getEpicById(epic.getId()).getDuration().toMinutes());
         assertNull(taskManager.getEpicById(epic.getId()).getEndTime());
     }
 
