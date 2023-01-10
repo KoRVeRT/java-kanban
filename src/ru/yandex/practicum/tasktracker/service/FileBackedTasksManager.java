@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTasksManager extends InMemoryTaskManager {
     private static final String CSV_FILE_HEADER = "id,type,name,status,description,startTime,duration(min)," +
             "endTime,epic";
+    private static final String CSV_VALUE_SEPARATOR = ",";
     private final String pathSave;
 
     public FileBackedTasksManager(HistoryManager historyManager, String path) {
@@ -172,11 +173,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     private static String historyToString(HistoryManager manager) {
         return manager.getHistory().stream()
                 .map(task -> String.valueOf(task.getId()))
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(CSV_VALUE_SEPARATOR));
     }
 
     private static List<Integer> historyFromString(String history) {
-        return Arrays.stream(history.split(",")).map(Integer::valueOf).toList();
+        return Arrays.stream(history.split(CSV_VALUE_SEPARATOR))
+                .map(Integer::valueOf)
+                .toList();
     }
 
     private void save() {

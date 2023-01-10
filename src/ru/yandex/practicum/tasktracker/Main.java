@@ -35,7 +35,6 @@ public class Main {
         taskManager.addEpic(epic1);
         taskManager.addTask(task2);
         taskManager.addTask(task1);
-
         // update task
         Task task4 = new Task();
         task4.setId(task1.getId());

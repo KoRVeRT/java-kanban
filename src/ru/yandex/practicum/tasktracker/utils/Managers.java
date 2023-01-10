@@ -7,9 +7,10 @@ import ru.yandex.practicum.tasktracker.service.InMemoryTaskManager;
 import ru.yandex.practicum.tasktracker.service.TaskManager;
 
 public final class Managers {
-    public static final String PATH_SAVE_FILE = "resources/saveManager.csv";
+    public static final String PATH_SAVE_FILE = "resources/save-manager.csv";
+
     public static TaskManager getDefault() {
-         return getFileBackedTasksManager();
+        return getFileBackedTasksManager();
     }
 
     public static HistoryManager getDefaultHistory() {
