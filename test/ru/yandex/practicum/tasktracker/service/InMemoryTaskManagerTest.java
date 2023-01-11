@@ -49,7 +49,7 @@ class InMemoryTaskManagerTest {
     @Test
     void updateSubtask_checkUpdateTaskWithSameStartTime() {
         // create epics
-        Epic epic = createEpic(1, "Epic", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic", null, null, List.of());
         // create subtask
         Subtask subtask1 = createSubtask(2, "Subtask1", epic.getId(), TaskStatus.NEW,
                 "01.01.2022-15:25",
@@ -199,11 +199,11 @@ class InMemoryTaskManagerTest {
     @Test
     void getPrioritizedTasks_checkSortingTwoTasksWithoutStartTimeById_TasksShouldBeAtEndOfList() {
         // create task
-        Task task1 = createTask(1, "Task1", TaskStatus.NEW, "null", 0);
+        Task task1 = createTask(1, "Task1", TaskStatus.NEW, null, 0);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
-        Epic epic = createEpic(4, "Epic", "null", "null", List.of());
+        Epic epic = createEpic(4, "Epic", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(4, "Subtask1", epic.getId(), TaskStatus.NEW,
                 "01.01.2022-15:25",
@@ -233,7 +233,7 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic = createEpic(4, "Epic", "01.01.2022-15:25", "01.01.2022-17:05", List.of());
         // create subtasks
@@ -262,7 +262,7 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic = createEpic(4, "Epic", "01.01.2022-15:25", "01.01.2022-17:05", List.of());
         // create subtasks
@@ -293,7 +293,7 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic = createEpic(4, "Epic", "01.01.2022-15:25", "01.01.2022-17:05", List.of());
         // create subtasks
@@ -328,11 +328,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25",
                 "01.01.2022-17:05", List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -376,7 +376,7 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteSubtaskById_checkDeleteSubtaskInPrioritizedTasks_AndChangeTimeOfEpic() {
         // create epic
-        Epic epic = createEpic(1, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic1", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(2, "Subtask1", 1, TaskStatus.IN_PROGRESS,
                 "01.01.2022-15:25",
@@ -410,8 +410,8 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteEpicById_checkDeleteEpicAndSubtasksOfEpicInPrioritizedTasks() {
         // create epic
-        Epic epic1 = createEpic(1, "Epic1", "null", "null", List.of());
-        Epic epic2 = createEpic(2, "Epic2", "null", "null", List.of());
+        Epic epic1 = createEpic(1, "Epic1", null, null, List.of());
+        Epic epic2 = createEpic(2, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(3, "Subtask1", 1, TaskStatus.IN_PROGRESS,
                 "01.01.2022-15:25",
@@ -454,8 +454,8 @@ class InMemoryTaskManagerTest {
     @Test
     void getSubtaskById_shouldGetSubtaskByUseIdFromTaskManager_AndSaveSubtaskInHistoryManager() {
         // create epic
-        Epic epic1 = createEpic(1, "Epic1", "null", "null", List.of());
-        Epic epic2 = createEpic(2, "Epic2", "null", "null", List.of());
+        Epic epic1 = createEpic(1, "Epic1", null, null, List.of());
+        Epic epic2 = createEpic(2, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(3, "Subtask1", 1, TaskStatus.IN_PROGRESS,
                 "01.01.2022-15:25",
@@ -484,8 +484,8 @@ class InMemoryTaskManagerTest {
     @Test
     void getEpicById_shouldGetEpicByUseIdFromTaskManager_AndSaveEpicInHistoryManager() {
         // create epic
-        Epic epic1 = createEpic(1, "Epic1", "null", "null", List.of());
-        Epic epic2 = createEpic(2, "Epic2", "null", "null", List.of());
+        Epic epic1 = createEpic(1, "Epic1", null, null, List.of());
+        Epic epic2 = createEpic(2, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(3, "Subtask1", 1, TaskStatus.IN_PROGRESS,
                 "01.01.2022-15:25",
@@ -515,7 +515,7 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // add to manager
         taskManager.addTask(task1);
         taskManager.addTask(task2);
@@ -529,7 +529,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addSubtask_shouldSaveSubtaskInTaskManager_AndCheckAddSubtaskInEpic() {
         // create epic
-        Epic epic = createEpic(1, "Epic", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(2, "Subtask1", 1, TaskStatus.IN_PROGRESS,
                 "01.01.2022-15:25",
@@ -558,7 +558,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addEpic_shouldCheckEpicTimeInTaskManagerWithSubtasks() {
         // create epic
-        Epic epic = createEpic(1, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic1", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(2, "Subtask1", 1, TaskStatus.IN_PROGRESS,
                 "01.01.2022-15:25",
@@ -588,7 +588,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addEpic_shouldCheckEpicTimeInTaskManagerWithoutSubtasks() {
         // create epic
-        Epic epic = createEpic(1, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic1", null, null, List.of());
         // add to manager
         taskManager.addEpic(epic);
 
@@ -600,8 +600,8 @@ class InMemoryTaskManagerTest {
     @Test
     void addEpic_shouldSaveEpicInTaskManagerWithStatusNew() {
         // create epic
-        Epic epic1 = createEpic(1, "Epic1", "null", "null", List.of());
-        Epic epic2 = createEpic(2, "Epic2", "null", "null", List.of());
+        Epic epic1 = createEpic(1, "Epic1", null, null, List.of());
+        Epic epic2 = createEpic(2, "Epic2", null, null, List.of());
         // add to manager
         taskManager.addEpic(epic1);
         taskManager.addEpic(epic2);
@@ -617,7 +617,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addEpic_shouldSaveEpicInTaskManagerWithStatusInProgress() {
         // create epic
-        Epic epic = createEpic(1, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic1", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(2, "Subtask1", 1, TaskStatus.IN_PROGRESS, "01.01.2022-15:25",
                 75);
@@ -641,7 +641,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addEpic_shouldSaveEpicInTaskManagerWithStatusDone() {
         // create epic
-        Epic epic = createEpic(1, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic1", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(2, "Subtask1", 1, TaskStatus.DONE, "01.01.2022-15:25",
                 75);
@@ -667,9 +667,9 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(2, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(2, "Task3", TaskStatus.DONE, null, 0);
         // create epic
-        Epic epic = createEpic(4, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(4, "Epic1", null, null, List.of());
         // add to manager
         taskManager.addTask(task1);
         taskManager.addTask(task2);
@@ -685,7 +685,7 @@ class InMemoryTaskManagerTest {
     @Test
     void updateSubtask_shouldUpdateSubtask_AndChangeStatusDoneOfEpicInTaskManager_AndChangeTime() {
         // create epic
-        Epic epic = createEpic(1, "Epic1", "null", "null", List.of());
+        Epic epic = createEpic(1, "Epic1", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(2, "Subtask1", 1, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -719,11 +719,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(4, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(4, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(5, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -752,11 +752,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -791,11 +791,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -836,11 +836,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -879,11 +879,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -911,12 +911,12 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25",
                 "01.01.2022-17:05", List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null",
-                "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null,
+                null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -944,11 +944,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -976,11 +976,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -1012,11 +1012,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -1049,11 +1049,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -1092,11 +1092,11 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25", "01.01.2022-17:05",
                 List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null", "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null, null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -1138,12 +1138,12 @@ class InMemoryTaskManagerTest {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", "01.01.2022-15:25",
                 "01.01.2022-17:05", List.of());
-        Epic epic2 = createEpic(5, "Epic2", "null",
-                "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", null,
+                null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -1186,7 +1186,7 @@ class InMemoryTaskManagerTest {
         task.setId(id);
         task.setName(name);
         task.setStatus(status);
-        if (!(startTime.equals("null"))) {
+        if (startTime != null) {
             task.setStartTime(LocalDateTime.parse(startTime, Task.FORMATTER_OF_DATE));
         }
         if (duration != 0) {
@@ -1199,10 +1199,10 @@ class InMemoryTaskManagerTest {
         Epic epic = new Epic();
         epic.setId(id);
         epic.setName(name);
-        if (!(startTime.equals("null"))) {
+        if (startTime != null) {
             epic.setStartTime(LocalDateTime.parse(startTime, Task.FORMATTER_OF_DATE));
         }
-        if (!(endTime.equals("null"))) {
+        if (endTime != null) {
             epic.setEndTime(LocalDateTime.parse(endTime, Task.FORMATTER_OF_DATE));
         }
         for (Integer number : subtaskId) {
@@ -1217,7 +1217,7 @@ class InMemoryTaskManagerTest {
         subtask.setName(name);
         subtask.setEpicId(epicId);
         subtask.setStatus(status);
-        if (!(startTime.equals("null"))) {
+        if (startTime != null) {
             subtask.setStartTime(LocalDateTime.parse(startTime, Task.FORMATTER_OF_DATE));
         }
         if (duration != 0) {
