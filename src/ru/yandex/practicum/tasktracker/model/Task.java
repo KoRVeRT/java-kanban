@@ -28,7 +28,7 @@ public class Task {
         return TaskType.TASK;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

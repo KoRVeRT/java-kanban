@@ -147,6 +147,37 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
+    protected Task searchTask(Integer task) {
+        if (tasks.containsKey(task)) {
+            return tasks.get(task);
+        } else if (subtasks.containsKey(task)) {
+            return subtasks.get(task);
+        } else {
+            return epics.get(task);
+        }
+    }
+
+    protected void save() {
+        try (Writer writer = new FileWriter(pathSave, StandardCharsets.UTF_8)) {
+            writer.write(CSV_FILE_HEADER + "\n");
+            for (int i = 1; i <= generatorId; i++) {
+                Task task = tasks.get(i);
+                Epic epic = epics.get(i);
+                Subtask subtask = subtasks.get(i);
+                if (task != null) {
+                    writer.write(task.toCsvRow() + "\n");
+                } else if (epic != null) {
+                    writer.write(epic.toCsvRow() + "\n");
+                } else if (subtask != null) {
+                    writer.write(subtask.toCsvRow() + "\n");
+                }
+            }
+            writer.write("\n" + historyToString(historyManager));
+        } catch (IOException e) {
+            throw new ManagerSaveException();
+        }
+    }
+
     private void recoverHistory(List<Integer> idTasksHistory) {
         for (Integer task : idTasksHistory) {
             historyManager.add(searchTask(task));
@@ -160,7 +191,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 prioritizedTasks.add(task);
             }
             case SUBTASK -> {
-                subTasks.put(task.getId(), (Subtask) task);
+                subtasks.put(task.getId(), (Subtask) task);
                 prioritizedTasks.add(task);
             }
             case EPIC -> epics.put(task.getId(), (Epic) task);
@@ -180,27 +211,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return Arrays.stream(history.split(CSV_VALUE_SEPARATOR))
                 .map(Integer::valueOf)
                 .toList();
-    }
-
-    private void save() {
-        try (Writer writer = new FileWriter(pathSave, StandardCharsets.UTF_8)) {
-            writer.write(CSV_FILE_HEADER + "\n");
-            for (int i = 1; i <= generatorId; i++) {
-                Task task = tasks.get(i);
-                Epic epic = epics.get(i);
-                Subtask subtask = subTasks.get(i);
-                if (task != null) {
-                    writer.write(task.toCsvRow() + "\n");
-                } else if (epic != null) {
-                    writer.write(epic.toCsvRow() + "\n");
-                } else if (subtask != null) {
-                    writer.write(subtask.toCsvRow() + "\n");
-                }
-            }
-            writer.write("\n" + historyToString(historyManager));
-        } catch (IOException e) {
-            throw new ManagerSaveException();
-        }
     }
 
     private Task fromString(String value) {
@@ -253,15 +263,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
         }
         return task;
-    }
-
-    private Task searchTask(Integer task) {
-        if (tasks.containsKey(task)) {
-            return tasks.get(task);
-        } else if (subTasks.containsKey(task)) {
-            return subTasks.get(task);
-        } else {
-            return epics.get(task);
-        }
     }
 }

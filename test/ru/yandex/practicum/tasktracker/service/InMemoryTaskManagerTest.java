@@ -9,6 +9,7 @@ import ru.yandex.practicum.tasktracker.model.TaskStatus;
 import ru.yandex.practicum.tasktracker.service.exception.IntersectionException;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,11 +22,11 @@ class InMemoryTaskManagerTest {
     protected TaskManager taskManager;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException, InterruptedException {
         taskManager = createTaskManager();
     }
 
-    protected TaskManager createTaskManager() {
+    protected TaskManager createTaskManager() throws IOException, InterruptedException {
         return Managers.getInMemoryTaskManager();
     }
 

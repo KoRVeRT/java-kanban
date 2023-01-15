@@ -32,11 +32,11 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
     }
 
     @Test
-    void loadFromFile_shouldLoadTasksDataFromFile() {
+    void load_shouldLoadTasksDataFromFile() {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", TaskStatus.NEW, "01.01.2022-15:25", 120,
                 "01.01.2022-17:25", List.of(6));
@@ -56,16 +56,16 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
     }
 
     @Test
-    void loadFromFile_shouldCheckSaveManagerFromFile() throws IOException {
+    void load_shouldCheckSaveManagerFromFile() throws IOException {
         // create task
         Task task1 = createTask(1, "Task1", TaskStatus.NEW, "01.01.2022-12:20", 15);
         Task task2 = createTask(2, "Task2", TaskStatus.IN_PROGRESS, "01.01.2022-13:35", 25);
-        Task task3 = createTask(3, "Task3", TaskStatus.DONE, "null", 0);
+        Task task3 = createTask(3, "Task3", TaskStatus.DONE, null, 0);
         // create epics
         Epic epic1 = createEpic(4, "Epic1", TaskStatus.IN_PROGRESS, "01.01.2022-15:25", 120,
                 "01.01.2022-17:05", List.of());
-        Epic epic2 = createEpic(5, "Epic2", TaskStatus.NEW, "null", 0,
-                "null", List.of());
+        Epic epic2 = createEpic(5, "Epic2", TaskStatus.NEW, null, 0,
+                null, List.of());
         // create subtasks
         Subtask subtask1 = createSubtask(6, "Subtask1", 4, TaskStatus.NEW, "01.01.2022-15:25",
                 75);
@@ -115,7 +115,7 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         task.setId(id);
         task.setName(name);
         task.setStatus(status);
-        if (!(startTime.equals("null"))) {
+        if (startTime != null) {
             task.setStartTime(LocalDateTime.parse(startTime, Task.FORMATTER_OF_DATE));
         }
         task.setDuration(duration);
@@ -128,11 +128,11 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         epic.setId(id);
         epic.setName(name);
         epic.setStatus(status);
-        if (!(startTime.equals("null"))) {
+        if (startTime != null) {
             epic.setStartTime(LocalDateTime.parse(startTime, Task.FORMATTER_OF_DATE));
         }
         epic.setDuration(duration);
-        if (!(endTime.equals("null"))) {
+        if (endTime != null) {
             epic.setEndTime(LocalDateTime.parse(endTime, Task.FORMATTER_OF_DATE));
         }
         for (Integer number : subtaskId) {
@@ -147,7 +147,7 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         subtask.setName(name);
         subtask.setEpicId(epicId);
         subtask.setStatus(status);
-        if (!(startTime.equals("null"))) {
+        if (startTime != null) {
             subtask.setStartTime(LocalDateTime.parse(startTime, Task.FORMATTER_OF_DATE));
         }
         subtask.setDuration(duration);
