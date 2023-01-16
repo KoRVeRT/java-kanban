@@ -6,7 +6,6 @@ import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
-import ru.yandex.practicum.tasktracker.server.HttpTaskManager;
 import ru.yandex.practicum.tasktracker.server.KVServer;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
@@ -23,7 +22,7 @@ class HttpTaskManagerTest extends InMemoryTaskManagerTest {
     protected TaskManager createTaskManager() throws IOException, InterruptedException {
         server = new KVServer();
         server.start();
-        return Managers.getDefault();
+        return new HttpTaskManager(new InMemoryHistoryManager(), "http://localhost:" + KVServer.PORT);
     }
 
     @AfterEach

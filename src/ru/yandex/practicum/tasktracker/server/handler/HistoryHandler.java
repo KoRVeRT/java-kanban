@@ -8,12 +8,10 @@ import ru.yandex.practicum.tasktracker.utils.Managers;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class HistoryHandler implements HttpHandler {
     private final Gson gson = Managers.getGson();
-    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private final TaskManager taskManager;
 
     public HistoryHandler(TaskManager taskManager) {
@@ -27,7 +25,7 @@ public class HistoryHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         String path = String.valueOf(exchange.getRequestURI());
 
-        System.out.println("Обрабатывается запрос " + path + " с методом " + method);
+        System.out.println("The request is processed " + path + " with the method " + method);
 
         if (method.equals("GET")) {
             statusCode = 200;
@@ -36,7 +34,7 @@ public class HistoryHandler implements HttpHandler {
             response = "Некорректный запрос";
         }
 
-        exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=" + DEFAULT_CHARSET);
+        exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=" + StandardCharsets.UTF_8);
         exchange.sendResponseHeaders(statusCode, 0);
 
         try (OutputStream os = exchange.getResponseBody()) {

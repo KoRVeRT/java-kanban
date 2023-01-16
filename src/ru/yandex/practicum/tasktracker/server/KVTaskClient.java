@@ -1,5 +1,7 @@
 package ru.yandex.practicum.tasktracker.server;
 
+import ru.yandex.practicum.tasktracker.service.exception.ManagerSaveException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -45,10 +47,10 @@ public class KVTaskClient {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             if (response.statusCode() != 200) {
-                System.out.println("Не удалось сохранить данные");
+                System.out.println("Failed to save data");
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new  ManagerSaveException("Failed to save data");
         }
     }
 
@@ -67,16 +69,7 @@ public class KVTaskClient {
                     HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             return response.body();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return "Во время запроса произошла ошибка";
+            throw new  ManagerSaveException("Failed to load data");
         }
-    }
-
-    public String getApiToken() {
-        return apiToken;
-    }
-
-    public String getServerURL() {
-        return serverURL;
     }
 }

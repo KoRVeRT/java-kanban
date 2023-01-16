@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.yandex.practicum.tasktracker.adapter.DurationAdapter;
 import ru.yandex.practicum.tasktracker.adapter.LocalDateTimeAdapter;
-import ru.yandex.practicum.tasktracker.server.HttpTaskManager;
+import ru.yandex.practicum.tasktracker.service.HttpTaskManager;
 import ru.yandex.practicum.tasktracker.server.KVServer;
 import ru.yandex.practicum.tasktracker.service.FileBackedTasksManager;
 import ru.yandex.practicum.tasktracker.service.HistoryManager;

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.tasktracker.server;
+package ru.yandex.practicum.tasktracker.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -7,8 +7,7 @@ import com.google.gson.JsonParser;
 import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
-import ru.yandex.practicum.tasktracker.service.FileBackedTasksManager;
-import ru.yandex.practicum.tasktracker.service.HistoryManager;
+import ru.yandex.practicum.tasktracker.server.KVTaskClient;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
 import java.io.IOException;

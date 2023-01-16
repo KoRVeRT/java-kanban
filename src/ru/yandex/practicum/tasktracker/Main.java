@@ -4,7 +4,7 @@ import ru.yandex.practicum.tasktracker.model.Epic;
 import ru.yandex.practicum.tasktracker.model.Subtask;
 import ru.yandex.practicum.tasktracker.model.Task;
 import ru.yandex.practicum.tasktracker.model.TaskStatus;
-import ru.yandex.practicum.tasktracker.server.HttpTaskManager;
+import ru.yandex.practicum.tasktracker.service.HttpTaskManager;
 import ru.yandex.practicum.tasktracker.server.KVServer;
 import ru.yandex.practicum.tasktracker.utils.Managers;
 
@@ -40,7 +40,7 @@ public class Main {
         taskManager1.addEpic(epic1);
         taskManager1.addTask(task1);
         taskManager1.addTask(task2);
-                // create subtasks
+        // create subtasks
         Subtask subtask1 = new Subtask();
         subtask1.setName("Закончить тренажер");
         subtask1.setDescription("Выполнить все задания в тренажере");
@@ -55,7 +55,7 @@ public class Main {
         subtask2.setStatus(TaskStatus.NEW);
         subtask2.setStartTime(LocalDateTime.of(2022, Month.JANUARY, 1, 23, 55));
         subtask2.setDuration(122);
-                // add subtasks
+        // add subtasks
         taskManager1.addSubtask(subtask2);
         taskManager1.addSubtask(subtask1);
         System.out.println(taskManager1.getAllEpics());
