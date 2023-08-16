@@ -12,6 +12,5 @@
 
 Системные требования:
 JDK 11.
-IntelliJ IDEA.
 JUnit 5.
 Gson 2.9.0.
